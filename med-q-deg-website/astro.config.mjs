@@ -4,8 +4,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://your-username.github.io',
-  base: '/',
+  site: 'https://uni-medical.github.io',
+  base: '/med_roubst_web',
   integrations: [
     react(),
     tailwind({
