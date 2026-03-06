@@ -1,24 +1,68 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import { SITE_CONFIG } from '@data/config';
-import PerformanceChart from '@components/visualization/PerformanceChart';
-import ConfusionMatrix from '@components/visualization/ConfusionMatrix';
-import TSNEVisualization from '@components/visualization/TSNEVisualization';
 
 const title = `Results - ${SITE_CONFIG.title}`;
-const description = 'Benchmark results and performance analysis of degradation recognition methods.';
+const description = 'Benchmark results and performance analysis of 40 MLLMs on MedQ-Deg.';
+
+// Performance by capability dimension (Table 2)
+const capabilityData = {
+  commercial: {
+    mean: 49.2,
+    drop: 3.2,
+    dimensions: {
+      'Clinical Understanding': 64.5,
+      'Imaging Perception': 58.2,
+      'Anatomical Recognition': 50.7,
+      'Basic Science Reasoning': 49.6,
+      'Diagnostic Reasoning': 48.9,
+      'Treatment Reasoning': 47.5
+    }
+  },
+  openSource: {
+    mean: 31.6,
+    drop: 2.9
+  },
+  medical: {
+    mean: 35.6,
+    drop: 2.8
+  }
+};
+
+// Performance by degradation category (Table 3)
+const degradationCategories = [
+  { name: 'Noise', accuracy: 63.5, drop: 2.0, color: '#10b981' },
+  { name: 'Intensity Jitter', accuracy: 59.8, drop: 4.6, color: '#f59e0b' },
+  { name: 'Artifacts', accuracy: 59.2, drop: 3.0, color: '#ec4899' },
+  { name: 'Resolution & Blur', accuracy: 58.8, drop: 3.6, color: '#6366f1' },
+  { name: 'Motion Interference', accuracy: 54.2, drop: 5.4, color: '#8b5cf6' }
+];
+
+// Top 10 model rankings (from Figure 5b)
+const topModels = [
+  { rank: 1, name: 'GPT-5', accuracy: 52.8, type: 'Commercial' },
+  { rank: 2, name: 'GPT-5.1', accuracy: 51.2, type: 'Commercial' },
+  { rank: 3, name: 'Gemini-2.5-Flash', accuracy: 49.6, type: 'Commercial' },
+  { rank: 4, name: 'GPT-4.1', accuracy: 48.3, type: 'Commercial' },
+  { rank: 5, name: 'GPT-4.1-mini', accuracy: 47.1, type: 'Commercial' },
+  { rank: 6, name: 'GPT-4o', accuracy: 46.5, type: 'Commercial' },
+  { rank: 7, name: 'GLM-4.5v', accuracy: 44.2, type: 'Open Source' },
+  { rank: 8, name: 'Claude-Sonnet-4.5', accuracy: 43.8, type: 'Commercial' },
+  { rank: 9, name: 'GPT-4o-mini', accuracy: 42.1, type: 'Commercial' },
+  { rank: 10, name: 'DeepSeek-VL2', accuracy: 40.6, type: 'Open Source' }
+];
 ---
 
 <Layout title={title} description={description}>
   <!-- Hero Section -->
-  <section class="pt-32 pb-16 bg-gradient-to-b from-surface-950 via-surface-900 to-surface-950">
+  <section class="pt-32 pb-16 bg-gradient-to-b from-surface-50 via-white to-surface-50">
     <div class="container-custom">
       <div class="text-center max-w-3xl mx-auto animate-on-scroll">
         <h1 class="text-4xl sm:text-5xl font-bold mb-6">
           Benchmark <span class="gradient-text">Results</span>
         </h1>
-        <p class="text-xl text-surface-400">
-          Comprehensive performance analysis and visualization of degradation recognition methods.
+        <p class="text-xl text-surface-500">
+          Comprehensive evaluation of 40 MLLMs across 18 degradation types and 6 clinical capability dimensions.
         </p>
       </div>
     </div>
@@ -36,138 +80,157 @@ const description = 'Benchmark results and performance analysis of degradation r
         </button>
         <button
           class="result-tab"
-          data-tab="performance"
+          data-tab="capability"
         >
-          Performance
+          By Capability
         </button>
         <button
           class="result-tab"
-          data-tab="confusion"
+          data-tab="degradation"
         >
-          Confusion Matrix
+          By Degradation
         </button>
         <button
           class="result-tab"
-          data-tab="tsne"
+          data-tab="ranking"
         >
-          t-SNE
+          Model Ranking
+        </button>
+        <button
+          class="result-tab"
+          data-tab="ai-dke"
+        >
+          AI-DKE
         </button>
       </div>
 
       <!-- Overview Tab -->
       <div class="tab-content active" data-content="overview">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <!-- Key Metrics Cards -->
           <div class="card animate-on-scroll">
             <div class="flex items-start justify-between mb-4">
               <div>
-                <p class="text-surface-500 text-sm mb-1">Overall Accuracy</p>
-                <p class="text-3xl font-bold text-primary-400">87.3%</p>
+                <p class="text-surface-500 text-sm mb-1">MLLMs Evaluated</p>
+                <p class="text-3xl font-bold text-primary-600">40</p>
               </div>
-              <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center text-primary-400">
+              <div class="w-12 h-12 rounded-xl bg-primary-500/15 flex items-center justify-center text-primary-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
             </div>
             <div class="flex items-center gap-2 text-sm">
-              <span class="text-green-400">↑ 12.4%</span>
-              <span class="text-surface-500">vs baseline</span>
+              <span class="text-surface-500">9 Commercial + 21 Open Source + 10 Medical</span>
             </div>
           </div>
 
           <div class="card animate-on-scroll" style="animation-delay: 100ms;">
             <div class="flex items-start justify-between mb-4">
               <div>
-                <p class="text-surface-500 text-sm mb-1">F1-Score</p>
-                <p class="text-3xl font-bold text-accent-400">85.6%</p>
+                <p class="text-surface-500 text-sm mb-1">Commercial Models Avg</p>
+                <p class="text-3xl font-bold text-primary-600">49.2%</p>
               </div>
-              <div class="w-12 h-12 rounded-xl bg-accent-500/20 flex items-center justify-center text-accent-400">
+              <div class="w-12 h-12 rounded-xl bg-primary-500/15 flex items-center justify-center text-primary-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
             </div>
             <div class="flex items-center gap-2 text-sm">
-              <span class="text-green-400">↑ 10.8%</span>
-              <span class="text-surface-500">vs baseline</span>
+              <span class="text-red-500">↓ 3.2%</span>
+              <span class="text-surface-500">vs clean images</span>
             </div>
           </div>
 
           <div class="card animate-on-scroll" style="animation-delay: 200ms;">
             <div class="flex items-start justify-between mb-4">
               <div>
-                <p class="text-surface-500 text-sm mb-1">Unknown Detection</p>
-                <p class="text-3xl font-bold text-primary-400">92.1%</p>
+                <p class="text-surface-500 text-sm mb-1">Open Source Models Avg</p>
+                <p class="text-3xl font-bold text-accent-600">31.6%</p>
               </div>
-              <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center text-primary-400">
+              <div class="w-12 h-12 rounded-xl bg-accent-500/15 flex items-center justify-center text-accent-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
             </div>
             <div class="flex items-center gap-2 text-sm">
-              <span class="text-green-400">↑ 15.2%</span>
-              <span class="text-surface-500">AUROC improvement</span>
+              <span class="text-red-500">↓ 2.9%</span>
+              <span class="text-surface-500">vs clean images</span>
+            </div>
+          </div>
+
+          <div class="card animate-on-scroll" style="animation-delay: 300ms;">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <p class="text-surface-500 text-sm mb-1">Medical Models Avg</p>
+                <p class="text-3xl font-bold text-primary-600">35.6%</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-primary-500/15 flex items-center justify-center text-primary-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="text-red-500">↓ 2.8%</span>
+              <span class="text-surface-500">vs clean images</span>
             </div>
           </div>
         </div>
 
-        <!-- Method Comparison -->
+        <!-- Model Category Comparison -->
         <div class="animate-on-scroll">
-          <h2 class="text-2xl font-bold mb-6">Method Comparison</h2>
+          <h2 class="text-2xl font-bold mb-6">Performance by Model Category</h2>
 
           <div class="overflow-x-auto rounded-2xl glass-strong">
             <table class="w-full">
               <thead>
-                <tr class="border-b border-surface-700/50">
-                  <th class="text-left p-4 text-sm font-semibold">Method</th>
-                  <th class="text-center p-4 text-sm font-semibold">Accuracy</th>
-                  <th class="text-center p-4 text-sm font-semibold">F1-Score</th>
-                  <th class="text-center p-4 text-sm font-semibold">AUROC</th>
-                  <th class="text-center p-4 text-sm font-semibold">Parameters</th>
+                <tr class="border-b border-surface-200/60">
+                  <th class="text-left p-4 text-sm font-semibold">Model Category</th>
+                  <th class="text-center p-4 text-sm font-semibold">Count</th>
+                  <th class="text-center p-4 text-sm font-semibold">Mean Accuracy</th>
+                  <th class="text-center p-4 text-sm font-semibold">Performance Drop</th>
+                  <th class="text-center p-4 text-sm font-semibold">Best Performer</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-surface-700/30 bg-primary-500/10">
+                <tr class="border-b border-surface-200/50 bg-primary-500/8">
                   <td class="p-4">
                     <div class="flex items-center gap-2">
-                      <div class="w-2 h-2 rounded-full bg-primary-400"></div>
-                      <span class="font-medium">DPL (Ours)</span>
+                      <div class="w-2 h-2 rounded-full bg-primary-500"></div>
+                      <span class="font-medium">Commercial Models</span>
                     </div>
                   </td>
-                  <td class="p-4 text-center font-semibold text-primary-400">87.3%</td>
-                  <td class="p-4 text-center font-semibold text-primary-400">85.6%</td>
-                  <td class="p-4 text-center font-semibold text-primary-400">92.1%</td>
-                  <td class="p-4 text-center text-surface-400">86.2M</td>
+                  <td class="p-4 text-center">9</td>
+                  <td class="p-4 text-center font-semibold text-primary-600">49.2%</td>
+                  <td class="p-4 text-center text-red-500">-3.2%</td>
+                  <td class="p-4 text-center text-surface-600">GPT-5 (52.8%)</td>
                 </tr>
-                <tr class="border-b border-surface-700/30">
-                  <td class="p-4 text-surface-400">CLIP</td>
-                  <td class="p-4 text-center text-surface-400">74.9%</td>
-                  <td class="p-4 text-center text-surface-400">74.8%</td>
-                  <td class="p-4 text-center text-surface-400">76.9%</td>
-                  <td class="p-4 text-center text-surface-400">151.3M</td>
-                </tr>
-                <tr class="border-b border-surface-700/30">
-                  <td class="p-4 text-surface-400">CoOp</td>
-                  <td class="p-4 text-center text-surface-400">78.2%</td>
-                  <td class="p-4 text-center text-surface-400">77.6%</td>
-                  <td class="p-4 text-center text-surface-400">81.3%</td>
-                  <td class="p-4 text-center text-surface-400">151.4M</td>
-                </tr>
-                <tr class="border-b border-surface-700/30">
-                  <td class="p-4 text-surface-400">CoCoOp</td>
-                  <td class="p-4 text-center text-surface-400">80.1%</td>
-                  <td class="p-4 text-center text-surface-400">79.3%</td>
-                  <td class="p-4 text-center text-surface-400">83.7%</td>
-                  <td class="p-4 text-center text-surface-400">151.5M</td>
+                <tr class="border-b border-surface-200/50">
+                  <td class="p-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-2 h-2 rounded-full bg-accent-500"></div>
+                      <span class="font-medium">Open Source General</span>
+                    </div>
+                  </td>
+                  <td class="p-4 text-center">21</td>
+                  <td class="p-4 text-center font-semibold text-accent-600">31.6%</td>
+                  <td class="p-4 text-center text-red-500">-2.9%</td>
+                  <td class="p-4 text-center text-surface-600">GLM-4.5v (44.2%)</td>
                 </tr>
                 <tr>
-                  <td class="p-4 text-surface-400">ResNet-50</td>
-                  <td class="p-4 text-center text-surface-400">68.5%</td>
-                  <td class="p-4 text-center text-surface-400">67.2%</td>
-                  <td class="p-4 text-center text-surface-400">71.4%</td>
-                  <td class="p-4 text-center text-surface-400">25.6M</td>
+                  <td class="p-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                      <span class="font-medium">Medical Specialized</span>
+                    </div>
+                  </td>
+                  <td class="p-4 text-center">10</td>
+                  <td class="p-4 text-center font-semibold text-green-600">35.6%</td>
+                  <td class="p-4 text-center text-red-500">-2.8%</td>
+                  <td class="p-4 text-center text-surface-600">UniMedVL</td>
                 </tr>
               </tbody>
             </table>
@@ -175,54 +238,33 @@ const description = 'Benchmark results and performance analysis of degradation r
         </div>
       </div>
 
-      <!-- Performance Tab -->
-      <div class="tab-content" data-content="performance">
+      <!-- Capability Dimension Tab -->
+      <div class="tab-content" data-content="capability">
         <div class="animate-on-scroll">
-          <h2 class="text-2xl font-bold mb-6">Performance Analysis</h2>
-          <div class="card">
-            <PerformanceChart client:only="react" />
-          </div>
-        </div>
+          <h2 class="text-2xl font-bold mb-4">Performance by Capability Dimension</h2>
+          <p class="text-surface-500 mb-6">
+            Performance across 6 clinical capability dimensions for commercial models (Table 2).
+          </p>
 
-        <!-- Per-Category Performance -->
-        <div class="mt-12 animate-on-scroll">
-          <h3 class="text-xl font-bold mb-6">Performance by Category</h3>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { name: 'Blur', accuracy: 89.2, f1: 87.8, color: '#6366f1' },
-              { name: 'Noise', accuracy: 91.5, f1: 90.1, color: '#8b5cf6' },
-              { name: 'Artifact', accuracy: 84.7, f1: 83.2, color: '#ec4899' },
-              { name: 'Contrast', accuracy: 86.3, f1: 84.9, color: '#f59e0b' },
-              { name: 'Compression', accuracy: 88.1, f1: 86.5, color: '#10b981' },
-              { name: 'Other', accuracy: 82.4, f1: 81.0, color: '#64748b' },
-            ].map((cat, i) => (
-              <div class="card" style={`animation-delay: ${i * 50}ms;`}>
+            {Object.entries(capabilityData.commercial.dimensions).map(([dim, acc], i) => (
+              <div class="card animate-on-scroll" style={`animation-delay: ${i * 50}ms;`}>
                 <div class="flex items-center gap-3 mb-4">
-                  <div class="w-3 h-3 rounded-full" style={`background: ${cat.color};`}></div>
-                  <h4 class="font-semibold">{cat.name}</h4>
+                  <div class="w-10 h-10 rounded-xl bg-primary-500/15 flex items-center justify-center text-primary-600 font-bold">
+                    {dim.split(' ').map(w => w[0]).join('')}
+                  </div>
+                  <h4 class="font-semibold">{dim}</h4>
                 </div>
                 <div class="space-y-3">
                   <div>
                     <div class="flex justify-between text-sm mb-1">
                       <span class="text-surface-500">Accuracy</span>
-                      <span class="font-medium">{cat.accuracy}%</span>
+                      <span class="font-medium">{acc}%</span>
                     </div>
-                    <div class="h-2 rounded-full bg-surface-800 overflow-hidden">
+                    <div class="h-2 rounded-full bg-surface-200 overflow-hidden">
                       <div
-                        class="h-full rounded-full transition-all duration-500"
-                        style={`width: ${cat.accuracy}%; background: ${cat.color};`}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-sm mb-1">
-                      <span class="text-surface-500">F1-Score</span>
-                      <span class="font-medium">{cat.f1}%</span>
-                    </div>
-                    <div class="h-2 rounded-full bg-surface-800 overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all duration-500"
-                        style={`width: ${cat.f1}%; background: ${cat.color};`}
+                        class="h-full rounded-full transition-all duration-500 bg-primary-500"
+                        style={`width: ${acc}%;`}
                       ></div>
                     </div>
                   </div>
@@ -230,28 +272,365 @@ const description = 'Benchmark results and performance analysis of degradation r
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      <!-- Confusion Matrix Tab -->
-      <div class="tab-content" data-content="confusion">
-        <div class="animate-on-scroll">
-          <h2 class="text-2xl font-bold mb-6">Confusion Matrix</h2>
-          <div class="card">
-            <ConfusionMatrix client:only="react" />
+          <div class="mt-12 card animate-on-scroll">
+            <h3 class="text-xl font-bold mb-4">Capability Dimension Performance Summary</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-surface-200/60">
+                    <th class="text-left p-4 text-sm font-semibold">Capability Dimension</th>
+                    <th class="text-center p-4 text-sm font-semibold">Abbreviation</th>
+                    <th class="text-center p-4 text-sm font-semibold">Commercial Models</th>
+                    <th class="text-center p-4 text-sm font-semibold">Rank</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Clinical Understanding</td>
+                    <td class="p-4 text-center font-mono text-sm">CU</td>
+                    <td class="p-4 text-center font-semibold">64.5%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">1st</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Imaging Perception</td>
+                    <td class="p-4 text-center font-mono text-sm">IP</td>
+                    <td class="p-4 text-center font-semibold">58.2%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">2nd</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Anatomical Recognition</td>
+                    <td class="p-4 text-center font-mono text-sm">AR</td>
+                    <td class="p-4 text-center font-semibold">50.7%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">3rd</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Basic Science Reasoning</td>
+                    <td class="p-4 text-center font-mono text-sm">BS</td>
+                    <td class="p-4 text-center font-semibold">49.6%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">4th</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Diagnostic Reasoning</td>
+                    <td class="p-4 text-center font-mono text-sm">Diag</td>
+                    <td class="p-4 text-center font-semibold">48.9%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs">5th</span></td>
+                  </tr>
+                  <tr>
+                    <td class="p-4">Treatment Reasoning</td>
+                    <td class="p-4 text-center font-mono text-sm">Treat</td>
+                    <td class="p-4 text-center font-semibold">47.5%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs">6th</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- t-SNE Tab -->
-      <div class="tab-content" data-content="tsne">
+      <!-- Degradation Category Tab -->
+      <div class="tab-content" data-content="degradation">
         <div class="animate-on-scroll">
-          <h2 class="text-2xl font-bold mb-6">t-SNE Visualization</h2>
-          <p class="text-surface-400 mb-6">
-            Feature space visualization showing the distribution of degradation types.
+          <h2 class="text-2xl font-bold mb-4">Performance by Degradation Category</h2>
+          <p class="text-surface-500 mb-6">
+            Impact of 5 degradation categories on model performance (Table 3).
           </p>
-          <div class="card">
-            <TSNEVisualization client:only="react" />
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {degradationCategories.map((cat, i) => (
+              <div class="card animate-on-scroll" style={`animation-delay: ${i * 50}ms;`}>
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-3 h-3 rounded-full" style={`background: ${cat.color};`}></div>
+                  <h4 class="font-semibold">{cat.name}</h4>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="flex justify-between text-sm mb-1">
+                      <span class="text-surface-500">Mean Accuracy</span>
+                      <span class="font-medium">{cat.accuracy}%</span>
+                    </div>
+                    <div class="h-2 rounded-full bg-surface-200 overflow-hidden">
+                      <div
+                        class="h-full rounded-full transition-all duration-500"
+                        style={`width: ${cat.accuracy}%; background: ${cat.color};`}
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between pt-2 border-t border-surface-200/50">
+                    <span class="text-sm text-surface-500">Performance Drop</span>
+                    <span class="text-sm font-medium text-red-500">↓ {cat.drop}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="card animate-on-scroll">
+            <h3 class="text-xl font-bold mb-4">Degradation Category Summary</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-surface-200/60">
+                    <th class="text-left p-4 text-sm font-semibold">Category</th>
+                    <th class="text-center p-4 text-sm font-semibold">Mean Accuracy</th>
+                    <th class="text-center p-4 text-sm font-semibold">Drop vs Clean</th>
+                    <th class="text-center p-4 text-sm font-semibold">Impact Level</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Noise</td>
+                    <td class="p-4 text-center font-semibold">63.5%</td>
+                    <td class="p-4 text-center text-red-500">-2.0%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">Low</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Artifacts</td>
+                    <td class="p-4 text-center font-semibold">59.2%</td>
+                    <td class="p-4 text-center text-red-500">-3.0%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">Moderate</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Resolution & Blur</td>
+                    <td class="p-4 text-center font-semibold">58.8%</td>
+                    <td class="p-4 text-center text-red-500">-3.6%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">Moderate</span></td>
+                  </tr>
+                  <tr class="border-b border-surface-200/50">
+                    <td class="p-4">Intensity Jitter</td>
+                    <td class="p-4 text-center font-semibold">59.8%</td>
+                    <td class="p-4 text-center text-red-500">-4.6%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs">High</span></td>
+                  </tr>
+                  <tr>
+                    <td class="p-4">Motion Interference</td>
+                    <td class="p-4 text-center font-semibold">54.2%</td>
+                    <td class="p-4 text-center text-red-500">-5.4%</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">Severe</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Model Ranking Tab -->
+      <div class="tab-content" data-content="ranking">
+        <div class="animate-on-scroll">
+          <h2 class="text-2xl font-bold mb-4">Top 10 Model Rankings</h2>
+          <p class="text-surface-500 mb-6">
+            Overall performance ranking of MLLMs on MedQ-Deg (from Figure 5b).
+          </p>
+
+          <div class="card animate-on-scroll">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-surface-200/60">
+                    <th class="text-center p-4 text-sm font-semibold w-20">Rank</th>
+                    <th class="text-left p-4 text-sm font-semibold">Model</th>
+                    <th class="text-center p-4 text-sm font-semibold">Type</th>
+                    <th class="text-center p-4 text-sm font-semibold">Accuracy</th>
+                    <th class="text-center p-4 text-sm font-semibold">Performance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topModels.map((model) => (
+                    <tr class={model.rank <= 3 ? "border-b border-surface-200/50 bg-primary-500/5" : "border-b border-surface-200/50"}>
+                      <td class="p-4 text-center">
+                        {model.rank === 1 && <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 font-bold">1</span>}
+                        {model.rank === 2 && <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold">2</span>}
+                        {model.rank === 3 && <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-700 font-bold">3</span>}
+                        {model.rank > 3 && <span class="text-surface-500 font-medium">{model.rank}</span>}
+                      </td>
+                      <td class="p-4 font-medium">{model.name}</td>
+                      <td class="p-4 text-center">
+                        <span class={`px-2 py-1 rounded-full text-xs ${
+                          model.type === 'Commercial'
+                            ? 'bg-primary-100 text-primary-700'
+                            : 'bg-accent-100 text-accent-700'
+                        }`}>
+                          {model.type}
+                        </span>
+                      </td>
+                      <td class="p-4 text-center font-semibold">{model.accuracy}%</td>
+                      <td class="p-4">
+                        <div class="flex items-center gap-2">
+                          <div class="flex-1 h-2 rounded-full bg-surface-200 overflow-hidden">
+                            <div
+                              class="h-full rounded-full bg-primary-500 transition-all duration-500"
+                              style={`width: ${(model.accuracy / 52.8) * 100}%;`}
+                            ></div>
+                          </div>
+                          <span class="text-xs text-surface-500 w-12 text-right">
+                            {((model.accuracy / 52.8) * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-8 grid md:grid-cols-3 gap-6">
+            <div class="card text-center animate-on-scroll">
+              <div class="text-4xl font-bold text-primary-600 mb-2">9</div>
+              <div class="text-surface-500">Commercial Models</div>
+              <div class="text-sm text-surface-400 mt-1">Mean: 49.2%</div>
+            </div>
+            <div class="card text-center animate-on-scroll" style="animation-delay: 100ms;">
+              <div class="text-4xl font-bold text-accent-600 mb-2">21</div>
+              <div class="text-surface-500">Open Source Models</div>
+              <div class="text-sm text-surface-400 mt-1">Mean: 31.6%</div>
+            </div>
+            <div class="card text-center animate-on-scroll" style="animation-delay: 200ms;">
+              <div class="text-4xl font-bold text-green-600 mb-2">10</div>
+              <div class="text-surface-500">Medical Models</div>
+              <div class="text-sm text-surface-400 mt-1">Mean: 35.6%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI-DKE Tab -->
+      <div class="tab-content" data-content="ai-dke">
+        <div class="animate-on-scroll">
+          <h2 class="text-2xl font-bold mb-4">AI Dunning-Kruger Effect</h2>
+          <p class="text-surface-500 mb-6">
+            The core discovery of MedQ-Deg: MLLMs exhibit overconfidence that increases as performance degrades.
+          </p>
+
+          <!-- Calibration Shift Formula -->
+          <div class="card mb-8 animate-on-scroll">
+            <h3 class="text-lg font-semibold mb-4">Calibration Shift Metric</h3>
+            <div class="bg-surface-100 rounded-xl p-6 text-center">
+              <div class="text-2xl font-mono text-primary-700">
+                Δ<sub>calib</sub>(f, D) = (1/|D|) Σ C(x) - Acc(f, D)
+              </div>
+              <div class="mt-4 grid md:grid-cols-3 gap-4 text-sm">
+                <div class="p-3 bg-white rounded-lg">
+                  <span class="font-semibold">C(x)</span>
+                  <p class="text-surface-500 mt-1">Perceived confidence for sample x</p>
+                </div>
+                <div class="p-3 bg-white rounded-lg">
+                  <span class="font-semibold">Acc(f, D)</span>
+                  <p class="text-surface-500 mt-1">Actual accuracy on dataset D</p>
+                </div>
+                <div class="p-3 bg-white rounded-lg">
+                  <span class="font-semibold">Positive Δ</span>
+                  <p class="text-surface-500 mt-1">Indicates overconfidence</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Intra-Model DKE -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card animate-on-scroll">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-sm font-bold">1</span>
+                Intra-Model DKE
+              </h3>
+              <p class="text-surface-600 mb-4">
+                As degradation severity increases from L0 to L2, model accuracy decreases but overconfidence increases.
+              </p>
+              <ul class="space-y-2 text-sm text-surface-600">
+                <li class="flex items-start gap-2">
+                  <span class="text-primary-500 mt-1">•</span>
+                  <span>L0 (Clean): Higher accuracy, lower confidence gap</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary-500 mt-1">•</span>
+                  <span>L1 (Moderate): Accuracy drops, confidence remains high</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary-500 mt-1">•</span>
+                  <span>L2 (Severe): Significant accuracy drop, persistent overconfidence</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="card animate-on-scroll" style="animation-delay: 100ms;">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-accent-100 text-accent-600 flex items-center justify-center text-sm font-bold">2</span>
+                Inter-Model DKE
+              </h3>
+              <p class="text-surface-600 mb-4">
+                Lower-performing models exhibit higher Calibration Shift than high-performing models.
+              </p>
+              <ul class="space-y-2 text-sm text-surface-600">
+                <li class="flex items-start gap-2">
+                  <span class="text-accent-500 mt-1">•</span>
+                  <span>Top performers (GPT-5, GPT-5.1): Better calibrated</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-accent-500 mt-1">•</span>
+                  <span>Mid-tier models: Moderate overconfidence</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-accent-500 mt-1">•</span>
+                  <span>Low performers: Significant overconfidence gap</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Cliff Effect -->
+          <div class="card mb-8 animate-on-scroll">
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-sm font-bold">3</span>
+              Cliff Effect
+            </h3>
+            <p class="text-surface-600 mb-4">
+              Performance degradation is not linear. The transition from L1 to L2 shows a sharp "cliff" in accuracy.
+            </p>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="p-4 bg-green-50 rounded-xl border border-green-200">
+                <div class="text-sm text-green-700 font-medium mb-1">L0 (Clean)</div>
+                <div class="text-2xl font-bold text-green-800">Baseline</div>
+                <div class="text-sm text-green-600 mt-1">Optimal performance</div>
+              </div>
+              <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                <div class="text-sm text-yellow-700 font-medium mb-1">L1 (Moderate)</div>
+                <div class="text-2xl font-bold text-yellow-800">~3% Drop</div>
+                <div class="text-sm text-yellow-600 mt-1">Diagnostic features preserved</div>
+              </div>
+              <div class="p-4 bg-red-50 rounded-xl border border-red-200">
+                <div class="text-sm text-red-700 font-medium mb-1">L2 (Severe)</div>
+                <div class="text-2xl font-bold text-red-800">Cliff Drop</div>
+                <div class="text-sm text-red-600 mt-1">Diagnosis difficult but feasible</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calibration Shift Visualization -->
+          <div class="card animate-on-scroll">
+            <h3 class="text-lg font-semibold mb-4">Calibration Shift Trends</h3>
+            <div class="h-64 bg-surface-50 rounded-xl p-4 flex items-end justify-around gap-2">
+              {[
+                { model: 'GPT-5', shift: 0.08, acc: 52.8 },
+                { model: 'GPT-4o', shift: 0.12, acc: 46.5 },
+                { model: 'GLM-4.5v', shift: 0.15, acc: 44.2 },
+                { model: 'Avg Open', shift: 0.22, acc: 31.6 },
+                { model: 'Avg Medical', shift: 0.25, acc: 35.6 }
+              ].map((item, i) => (
+                <div class="flex flex-col items-center gap-2 flex-1">
+                  <div class="text-xs text-surface-500">{item.shift.toFixed(2)}</div>
+                  <div
+                    class="w-full max-w-16 rounded-t-lg transition-all duration-500 bg-gradient-to-t from-primary-500 to-primary-400"
+                    style={`height: ${item.shift * 200}px;`}
+                  ></div>
+                  <div class="text-xs text-surface-600 text-center truncate w-full">{item.model}</div>
+                </div>
+              ))}
+            </div>
+            <div class="mt-4 text-center text-sm text-surface-500">
+              Higher bars indicate greater overconfidence (Calibration Shift)
+            </div>
           </div>
         </div>
       </div>
@@ -259,14 +638,14 @@ const description = 'Benchmark results and performance analysis of degradation r
   </section>
 
   <!-- CTA -->
-  <section class="section bg-surface-900/50">
+  <section class="section bg-surface-100/50">
     <div class="container-custom">
       <div class="glass-strong rounded-3xl p-8 md:p-12 text-center animate-on-scroll">
         <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-          Reproduce These Results
+          Explore the Full Results
         </h2>
-        <p class="text-surface-400 max-w-xl mx-auto mb-8">
-          Access our code, models, and datasets to reproduce all benchmark results.
+        <p class="text-surface-500 max-w-xl mx-auto mb-8">
+          Access our complete evaluation results, including per-model breakdowns and detailed analysis of the AI-Dunning-Kruger Effect.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <a href={SITE_CONFIG.links.github} class="btn btn-primary">
@@ -284,7 +663,7 @@ const description = 'Benchmark results and performance analysis of degradation r
 <style>
   .result-tab {
     @apply px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200;
-    @apply hover:bg-surface-700/50;
+    @apply hover:bg-surface-100;
   }
 
   .result-tab.active {

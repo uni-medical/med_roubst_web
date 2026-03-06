@@ -88,7 +88,7 @@ export default function ConfusionMatrix() {
         .attr('x', i * cellSize + cellSize / 2)
         .attr('y', -40)
         .attr('text-anchor', 'middle')
-        .attr('fill', categoryColors[i])
+        .attr('fill', categoryColors[i] ?? '#000')
         .attr('font-size', '14px')
         .attr('font-weight', '600')
         .text(cat);
@@ -102,7 +102,7 @@ export default function ConfusionMatrix() {
         .attr('y', i * cellSize + cellSize / 2)
         .attr('text-anchor', 'end')
         .attr('dominant-baseline', 'middle')
-        .attr('fill', categoryColors[i])
+        .attr('fill', categoryColors[i] ?? '#000')
         .attr('font-size', '14px')
         .attr('font-weight', '600')
         .text(cat);
@@ -114,7 +114,7 @@ export default function ConfusionMatrix() {
       .attr('x', width / 2)
       .attr('y', -60)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#a1a1aa')
+      .attr('fill', '#52525b')
       .attr('font-size', '12px')
       .attr('font-weight', '600')
       .text('PREDICTED CLASS');
@@ -124,7 +124,7 @@ export default function ConfusionMatrix() {
       .attr('x', -height / 2)
       .attr('y', -60)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#a1a1aa')
+      .attr('fill', '#52525b')
       .attr('font-size', '12px')
       .attr('font-weight', '600')
       .attr('transform', `rotate(-90, -60, ${height / 2})`)
@@ -135,12 +135,12 @@ export default function ConfusionMatrix() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-surface-400 text-sm">
+        <p className="text-surface-500 text-sm">
           Values represent the percentage of predictions for each combination of actual and predicted classes.
         </p>
       </div>
 
-      <div className="bg-surface-900/50 rounded-xl p-8 overflow-x-auto">
+      <div className="bg-white/60 rounded-xl p-8 overflow-x-auto border border-surface-200">
         <div className="flex justify-center">
           <svg ref={svgRef} className="max-w-full" />
         </div>

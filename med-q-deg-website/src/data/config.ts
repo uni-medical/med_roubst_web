@@ -9,9 +9,9 @@
 export const SITE_CONFIG = {
   // Basic Info
   title: 'MedQ-Deg',
-  subtitle: 'A Multi-Dimensional Benchmark for Medical Image Degradation Recognition',
+  subtitle: 'A Multidimensional Benchmark for Evaluating MLLMs Across Medical Image Quality Degradations',
   description:
-    'First benchmark for open-set degradation recognition in medical imaging with 6 categories and 28 degradation types.',
+    'A VQA benchmark with 24,894 QA pairs evaluating 40 MLLMs across 18 degradation types, 7 medical imaging modalities, and 30 fine-grained clinical skills.',
 
   // Links
   links: {
@@ -27,20 +27,19 @@ export const SITE_CONFIG = {
 
   // Stats shown on homepage
   stats: {
-    categories: 6,
-    types: 28,
-    datasets: 4,
-    modalities: ['MRI', 'CT', 'X-Ray', 'Ultrasound'],
+    categories: 5,
+    types: 18,
+    datasets: 3,
+    modalities: ['CT', 'MRI', 'X-Ray', 'Ultrasound', 'Histopathology', 'Dermoscopy', 'Fundus'],
   },
 
   // Colors for categories
   categoryColors: {
-    blur: '#6366f1',      // Indigo
-    noise: '#8b5cf6',     // Violet
-    artifact: '#ec4899',  // Pink
-    contrast: '#f59e0b',  // Amber
-    compression: '#10b981', // Emerald
-    other: '#64748b',     // Slate
+    artifact: '#ec4899',       // Pink
+    intensity: '#f59e0b',      // Amber
+    resolution: '#6366f1',     // Indigo
+    motion: '#10b981',         // Emerald
+    noise: '#8b5cf6',          // Violet
   },
 } as const;
 
@@ -53,12 +52,36 @@ export type SiteConfig = typeof SITE_CONFIG;
  */
 export const CATEGORIES = [
   {
-    id: 'blur',
-    name: 'Blur',
-    nameZh: '模糊',
+    id: 'artifact',
+    name: 'Artifacts',
+    nameZh: '伪迹',
+    color: '#ec4899',
+    icon: 'warning',
+    description: 'Bias field, dark spots, ghosting, and metal artifacts',
+  },
+  {
+    id: 'intensity',
+    name: 'Intensity Jitter',
+    nameZh: '强度抖动',
+    color: '#f59e0b',
+    icon: 'brightness_6',
+    description: 'Brightness adjustment and contrast reduction',
+  },
+  {
+    id: 'resolution',
+    name: 'Resolution & Blur',
+    nameZh: '分辨率和模糊',
     color: '#6366f1',
     icon: 'blur_on',
-    description: 'Motion blur, Gaussian blur, defocus artifacts',
+    description: 'Gaussian blur and resolution degradation',
+  },
+  {
+    id: 'motion',
+    name: 'Motion Interference',
+    nameZh: '运动干扰',
+    color: '#10b981',
+    icon: 'motion_photos_on',
+    description: 'Motion blur and related artifacts',
   },
   {
     id: 'noise',
@@ -66,82 +89,43 @@ export const CATEGORIES = [
     nameZh: '噪声',
     color: '#8b5cf6',
     icon: 'grain',
-    description: 'Gaussian noise, salt & pepper, speckle noise',
-  },
-  {
-    id: 'artifact',
-    name: 'Artifact',
-    nameZh: '伪影',
-    color: '#ec4899',
-    icon: 'warning',
-    description: 'Motion artifacts, ring artifacts, aliasing',
-  },
-  {
-    id: 'contrast',
-    name: 'Contrast',
-    nameZh: '对比度',
-    color: '#f59e0b',
-    icon: 'brightness_6',
-    description: 'Low contrast, overexposure, underexposure',
-  },
-  {
-    id: 'compression',
-    name: 'Compression',
-    nameZh: '压缩',
-    color: '#10b981',
-    icon: 'compress',
-    description: 'JPEG compression, block artifacts',
-  },
-  {
-    id: 'other',
-    name: 'Other',
-    nameZh: '其他',
-    color: '#64748b',
-    icon: 'more_horiz',
-    description: 'Other types of degradation',
+    description: 'Gaussian noise and related noise types',
   },
 ] as const;
 
 /**
  * Degradation Types
- * Add or modify degradation types here
+ * 18 degradation types across 5 categories based on the paper
+ * Severity levels: L0 (original), L1 (moderate), L2 (severe)
  */
 export const DEGRADATION_TYPES = [
-  // Blur types
-  { id: 'gaussian_blur', name: 'Gaussian Blur', category: 'blur' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'motion_blur', name: 'Motion Blur', category: 'blur' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'defocus_blur', name: 'Defocus Blur', category: 'blur' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'box_blur', name: 'Box Blur', category: 'blur' as const, severity: ['mild', 'moderate', 'severe'] },
+  // Artifacts (5 types)
+  { id: 'bias_field_artifact', name: 'Bias Field Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'dark_spots_artifact', name: 'Dark Spots Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'ghosting_artifact', name: 'Ghosting Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'sparse_view', name: 'Sparse View', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'limited_angle', name: 'Limited Angle', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Noise types
-  { id: 'gaussian_noise', name: 'Gaussian Noise', category: 'noise' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'salt_pepper', name: 'Salt & Pepper', category: 'noise' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'speckle_noise', name: 'Speckle Noise', category: 'noise' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'poisson_noise', name: 'Poisson Noise', category: 'noise' as const, severity: ['mild', 'moderate', 'severe'] },
+  // Intensity Jitter (2 types)
+  { id: 'adjust_brightness', name: 'Adjust Brightness', category: 'intensity' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'reduce_contrast', name: 'Reduce Contrast', category: 'intensity' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Artifact types
-  { id: 'motion_artifact', name: 'Motion Artifact', category: 'artifact' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'ring_artifact', name: 'Ring Artifact', category: 'artifact' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'aliasing', name: 'Aliasing', category: 'artifact' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'stripe_artifact', name: 'Stripe Artifact', category: 'artifact' as const, severity: ['mild', 'moderate', 'severe'] },
+  // Resolution & Blur (4 types)
+  { id: 'gaussian_blur', name: 'Gaussian Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'motion_blur', name: 'Motion Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'defocus_blur', name: 'Defocus Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'low_resolution', name: 'Low Resolution', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Contrast types
-  { id: 'low_contrast', name: 'Low Contrast', category: 'contrast' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'high_contrast', name: 'High Contrast', category: 'contrast' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'overexposure', name: 'Overexposure', category: 'contrast' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'underexposure', name: 'Underexposure', category: 'contrast' as const, severity: ['mild', 'moderate', 'severe'] },
+  // Motion Interference (3 types)
+  { id: 'motion_ghosting', name: 'Motion Ghosting', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'temporal_aliasing', name: 'Temporal Aliasing', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'cardiac_motion', name: 'Cardiac Motion', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Compression types
-  { id: 'jpeg_compression', name: 'JPEG Compression', category: 'compression' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'block_artifact', name: 'Block Artifact', category: 'compression' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'jpeg_2000', name: 'JPEG 2000', category: 'compression' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'webp_compression', name: 'WebP Compression', category: 'compression' as const, severity: ['mild', 'moderate', 'severe'] },
-
-  // Other types (will add more)
-  { id: 'haze', name: 'Haze', category: 'other' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'rain', name: 'Rain', category: 'other' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'frost', name: 'Frost', category: 'other' as const, severity: ['mild', 'moderate', 'severe'] },
-  { id: 'snow', name: 'Snow', category: 'other' as const, severity: ['mild', 'moderate', 'severe'] },
+  // Noise (4 types)
+  { id: 'gaussian_noise', name: 'Gaussian Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'speckle_noise', name: 'Speckle Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'salt_pepper_noise', name: 'Salt & Pepper Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'poisson_noise', name: 'Poisson Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
 ] as const;
 
 /**
@@ -150,25 +134,25 @@ export const DEGRADATION_TYPES = [
  */
 export const CONTRIBUTIONS = [
   {
-    id: 'benchmark',
-    title: 'MedQ-Deg Benchmark',
-    description: 'First comprehensive benchmark for medical image degradation recognition with 28 degradation types across 6 categories',
-    icon: 'assessment',
+    id: 'dataset',
+    title: 'Comprehensive Dataset',
+    description: '24,894 QA pairs across 18 degradation types, 7 medical imaging modalities, and 30 fine-grained clinical skills',
+    icon: 'dataset',
     link: '/benchmark',
   },
   {
-    id: 'dpl',
-    title: 'DPL Method',
-    description: 'Degradation-aware Prompt Learning with learnable prompts and prototype-based unknown detector',
-    icon: 'psychology',
-    link: '/methods',
+    id: 'evaluation',
+    title: 'Extensive Evaluation',
+    description: '40 MLLMs evaluated with Calibration Shift metric to assess model reliability and confidence calibration',
+    icon: 'assessment',
+    link: '/results',
   },
   {
-    id: 'dpt',
-    title: 'DPT Framework',
-    description: 'Degradation Prompt Transfer for downstream task adaptation with degradation-aware prompts',
-    icon: 'sync_alt',
-    link: '/methods#dpt',
+    id: 'discovery',
+    title: 'AI Dunning-Kruger Effect',
+    description: 'Discovery of the AI Dunning-Kruger Effect: models with lower performance often exhibit higher confidence',
+    icon: 'psychology',
+    link: '/results',
   },
 ] as const;
 
@@ -207,10 +191,10 @@ export const ANIMATION_CONFIG = {
  * Theme Configuration
  */
 export const THEME_CONFIG = {
-  defaultMode: 'dark', // 'light' | 'dark' | 'system'
+  defaultMode: 'light', // 'light' | 'dark' | 'system'
   allowToggle: true,
   gradients: {
     primary: 'from-primary-600 to-accent-600',
-    hero: 'from-surface-950 via-surface-900 to-surface-950',
+    hero: 'from-surface-50 via-white to-surface-50',
   },
 } as const;

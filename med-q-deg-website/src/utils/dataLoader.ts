@@ -9,7 +9,7 @@ export interface DegradationExample {
   id: string;
   type: string;
   category: string;
-  severity: 'mild' | 'moderate' | 'severe';
+  severity: 'L0' | 'L1' | 'L2';
   imagePath: string;
   modality: string;
   description?: string;
@@ -120,21 +120,21 @@ export async function loadTSNEData(): Promise<TSNEPoint[]> {
 
 // Placeholder data functions
 function getPlaceholderExamples(): DegradationExample[] {
-  const categories = ['blur', 'noise', 'artifact', 'contrast', 'compression', 'other'];
-  const types = ['gaussian_blur', 'motion_blur', 'gaussian_noise', 'salt_pepper'];
-  const severities: Array<'mild' | 'moderate' | 'severe'> = ['mild', 'moderate', 'severe'];
-  const modalities = ['MRI', 'CT', 'X-Ray', 'Ultrasound'];
+  const categories = ['artifact', 'intensity', 'resolution', 'motion', 'noise'];
+  const types = ['bias_field_artifact', 'gaussian_blur', 'gaussian_noise', 'motion_blur', 'adjust_brightness'];
+  const severities: Array<'L0' | 'L1' | 'L2'> = ['L0', 'L1', 'L2'];
+  const modalities = ['CT', 'MRI', 'X-Ray', 'Ultrasound', 'Histopathology', 'Dermoscopy', 'Fundus'];
 
   const examples: DegradationExample[] = [];
 
   for (let i = 0; i < 100; i++) {
     examples.push({
       id: `example-${i}`,
-      type: types[i % types.length],
-      category: categories[i % categories.length],
-      severity: severities[i % severities.length],
+      type: types[i % types.length] ?? 'unknown',
+      category: categories[i % categories.length] ?? 'unknown',
+      severity: severities[i % severities.length] ?? 'L0',
       imagePath: `/images/degradations/placeholder-${i % 10}.jpg`,
-      modality: modalities[i % modalities.length],
+      modality: modalities[i % modalities.length] ?? 'CT',
       description: `Example ${i + 1}`,
     });
   }

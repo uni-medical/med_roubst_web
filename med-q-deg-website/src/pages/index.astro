@@ -1,30 +1,27 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import { SITE_CONFIG, CATEGORIES, DEGRADATION_TYPES, CONTRIBUTIONS, PAGE_LAYOUTS } from '@data/config';
+import { SITE_CONFIG, CATEGORIES, DEGRADATION_TYPES, CONTRIBUTIONS } from '@data/config';
 
-// Get layout config
-const heroLayout = PAGE_LAYOUTS.home.hero;
-const statsLayout = PAGE_LAYOUTS.home.stats;
-const contributionsLayout = PAGE_LAYOUTS.home.contributions;
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title={SITE_CONFIG.title} description={SITE_CONFIG.description}>
   <!-- Hero Section -->
   <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <!-- Background gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-950/20 via-surface-950 to-surface-950"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-primary-50/50 via-surface-50 to-surface-50"></div>
 
     <!-- Animated background elements -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-400/15 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-400/15 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
     </div>
 
     <div class="container-custom relative z-10 text-center">
       <!-- Badge -->
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-on-scroll">
-        <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
-        <span class="text-sm text-surface-300">First Open-Set Medical Degradation Benchmark</span>
+        <span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
+        <span class="text-sm text-surface-600">First Open-Set Medical Degradation Benchmark</span>
       </div>
 
       <!-- Title -->
@@ -33,23 +30,31 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
       </h1>
 
       <!-- Subtitle -->
-      <p class="text-xl sm:text-2xl text-surface-400 max-w-3xl mx-auto mb-8 animate-on-scroll" style="animation-delay: 200ms;">
+      <p class="text-xl sm:text-2xl text-surface-500 max-w-3xl mx-auto mb-8 animate-on-scroll" style="animation-delay: 200ms;">
         {SITE_CONFIG.subtitle}
       </p>
 
       <!-- Stats -->
       <div class="flex flex-wrap justify-center gap-6 sm:gap-8 mb-12 animate-on-scroll" style="animation-delay: 300ms;">
         <div class="text-center">
-          <div class="text-4xl sm:text-5xl font-bold text-primary-400">{SITE_CONFIG.stats.categories}</div>
-          <div class="text-sm text-surface-500">Categories</div>
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600">40</div>
+          <div class="text-sm text-surface-500">MLLMs Evaluated</div>
         </div>
         <div class="text-center">
-          <div class="text-4xl sm:text-5xl font-bold text-accent-400">{SITE_CONFIG.stats.types}</div>
+          <div class="text-4xl sm:text-5xl font-bold text-accent-600">24,894</div>
+          <div class="text-sm text-surface-500">QA Pairs</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600">{SITE_CONFIG.stats.types}</div>
           <div class="text-sm text-surface-500">Degradation Types</div>
         </div>
         <div class="text-center">
-          <div class="text-4xl sm:text-5xl font-bold text-primary-400">{SITE_CONFIG.stats.datasets}</div>
-          <div class="text-sm text-surface-500">Datasets</div>
+          <div class="text-4xl sm:text-5xl font-bold text-accent-600">30</div>
+          <div class="text-sm text-surface-500">Fine-grained Skills</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-bold text-primary-600">7</div>
+          <div class="text-sm text-surface-500">Modalities</div>
         </div>
       </div>
 
@@ -67,7 +72,7 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
           </svg>
           GitHub
         </a>
-        <a href="/benchmark" class="btn btn-ghost text-lg">
+        <a href={`${base}/benchmark`} class="btn btn-ghost text-lg">
           Explore Benchmark
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -78,26 +83,26 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
 
     <!-- Scroll indicator -->
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-      <svg class="w-6 h-6 text-surface-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
       </svg>
     </div>
   </section>
 
   <!-- Categories Overview Section -->
-  <section class="section bg-surface-900/50">
+  <section class="section bg-surface-100/50">
     <div class="container-custom">
       <div class="text-center mb-16 animate-on-scroll">
         <h2 class="text-3xl sm:text-4xl font-bold mb-4">Degradation Categories</h2>
-        <p class="text-surface-400 max-w-2xl mx-auto">
-          Medical images suffer from various types of degradation. Our benchmark covers 6 major categories with 28 specific degradation types.
+        <p class="text-surface-500 max-w-2xl mx-auto">
+          Medical images suffer from various types of quality degradation. Our benchmark covers 5 major categories with 18 specific degradation types for evaluating MLLMs under medical image quality degradations.
         </p>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {CATEGORIES.map((category, index) => (
           <a
-            href={`/benchmark?category=${category.id}`}
+            href={`${base}/benchmark?category=${category.id}`}
             class="card-interactive group animate-on-scroll"
             style={`animation-delay: ${index * 50}ms;`}
           >
@@ -108,11 +113,10 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
                 {category.icon === 'grain' && '▥'}
                 {category.icon === 'warning' && '⚠'}
                 {category.icon === 'brightness_6' && '◑'}
-                {category.icon === 'compress' && '⤢'}
-                {category.icon === 'more_horiz' && '⋯'}
+                {category.icon === 'motion_photos_on' && '⌘'}
               </span>
             </div>
-            <h3 class="font-semibold text-center mb-1 group-hover:text-primary-400 transition-colors">
+            <h3 class="font-semibold text-center mb-1 group-hover:text-primary-600 transition-colors">
               {category.name}
             </h3>
             <p class="text-sm text-surface-500 text-center">
@@ -129,29 +133,29 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
     <div class="container-custom">
       <div class="text-center mb-16 animate-on-scroll">
         <h2 class="text-3xl sm:text-4xl font-bold mb-4">Key Contributions</h2>
-        <p class="text-surface-400 max-w-2xl mx-auto">
-          We propose a comprehensive benchmark and novel methods for medical image degradation recognition.
+        <p class="text-surface-500 max-w-2xl mx-auto">
+          We propose a comprehensive VQA benchmark for evaluating MLLMs across medical image quality degradations.
         </p>
       </div>
 
       <div class="grid md:grid-cols-3 gap-8">
         {CONTRIBUTIONS.map((contribution, index) => (
           <a
-            href={contribution.link}
+            href={`${base}${contribution.link}`}
             class="card-interactive group animate-on-scroll"
             style={`animation-delay: ${index * 100}ms;`}
           >
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500/15 to-accent-500/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
               <span class="text-3xl">
-                {contribution.icon === 'assessment' && '📊'}
+                {contribution.icon === 'dataset' && '📊'}
+                {contribution.icon === 'assessment' && '📈'}
                 {contribution.icon === 'psychology' && '🧠'}
-                {contribution.icon === 'sync_alt' && '🔄'}
               </span>
             </div>
-            <h3 class="text-xl font-semibold mb-3 group-hover:text-primary-400 transition-colors">
+            <h3 class="text-xl font-semibold mb-3 group-hover:text-primary-600 transition-colors">
               {contribution.title}
             </h3>
-            <p class="text-surface-400">
+            <p class="text-surface-500">
               {contribution.description}
             </p>
           </a>
@@ -161,16 +165,16 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
   </section>
 
   <!-- Degradation Types Preview -->
-  <section class="section bg-surface-900/50">
+  <section class="section bg-surface-100/50">
     <div class="container-custom">
       <div class="flex justify-between items-end mb-12 animate-on-scroll">
         <div>
           <h2 class="text-3xl sm:text-4xl font-bold mb-4">Degradation Types</h2>
-          <p class="text-surface-400">
-            Explore all 28 degradation types in our benchmark
+          <p class="text-surface-500">
+            Explore all 18 degradation types across 5 categories in our benchmark
           </p>
         </div>
-        <a href="/benchmark" class="btn btn-secondary hidden sm:flex">
+        <a href={`${base}/benchmark`} class="btn btn-secondary hidden sm:flex">
           View All
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -190,7 +194,7 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
                 <div class="badge mb-3" style={`background: ${category?.color}20; color: ${category?.color};`}>
                   {category?.name}
                 </div>
-                <h4 class="font-medium text-sm text-surface-200">
+                <h4 class="font-medium text-sm text-surface-800">
                   {deg.name}
                 </h4>
               </div>
@@ -200,7 +204,7 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
       </div>
 
       <div class="mt-8 text-center sm:hidden">
-        <a href="/benchmark" class="btn btn-secondary">
+        <a href={`${base}/benchmark`} class="btn btn-secondary">
           View All Types
         </a>
       </div>
@@ -214,14 +218,14 @@ const contributionsLayout = PAGE_LAYOUTS.home.contributions;
         <h2 class="text-2xl sm:text-3xl font-bold mb-4">
           Ready to Explore the Benchmark?
         </h2>
-        <p class="text-surface-400 max-w-xl mx-auto mb-8">
+        <p class="text-surface-500 max-w-xl mx-auto mb-8">
           Dive into our comprehensive medical image degradation benchmark and start your research today.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-          <a href="/benchmark" class="btn btn-primary">
+          <a href={`${base}/benchmark`} class="btn btn-primary">
             Explore Benchmark
           </a>
-          <a href="/examples" class="btn btn-secondary">
+          <a href={`${base}/examples`} class="btn btn-secondary">
             View Examples
           </a>
         </div>

@@ -78,7 +78,7 @@ export default function PerformanceChart() {
       .attr('x', (d) => (x(d.method) || 0) + x.bandwidth() / 2)
       .attr('y', (d) => y(d[selectedMetric]) - 10)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#f4f4f5')
+      .attr('fill', '#18181b')
       .attr('font-size', '14px')
       .attr('font-weight', 'bold')
       .attr('opacity', 0)
@@ -94,7 +94,7 @@ export default function PerformanceChart() {
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x))
       .selectAll('text')
-      .attr('fill', '#a1a1aa')
+      .attr('fill', '#52525b')
       .attr('font-size', '12px')
       .style('text-anchor', 'end')
       .attr('transform', 'rotate(-45)');
@@ -104,7 +104,7 @@ export default function PerformanceChart() {
       .append('g')
       .call(d3.axisLeft(y).ticks(5).tickFormat(d => `${d}%`))
       .selectAll('text')
-      .attr('fill', '#a1a1aa')
+      .attr('fill', '#52525b')
       .attr('font-size', '12px');
 
     // Grid lines
@@ -118,12 +118,12 @@ export default function PerformanceChart() {
           .tickFormat(() => '')
       )
       .selectAll('line')
-      .attr('stroke', '#3f3f46')
-      .attr('stroke-opacity', 0.3);
+      .attr('stroke', '#d4d4d8')
+      .attr('stroke-opacity', 0.6);
 
     // Remove domain line
     svg.selectAll('.domain').remove();
-    svg.selectAll('line').attr('stroke', '#3f3f46');
+    svg.selectAll('line').attr('stroke', '#d4d4d8');
 
   }, [selectedMetric]);
 
@@ -137,8 +137,8 @@ export default function PerformanceChart() {
             onClick={() => setSelectedMetric(metric as any)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               selectedMetric === metric
-                ? 'bg-primary-500/20 text-primary-300 border border-primary-500/50'
-                : 'glass hover:bg-surface-700/50'
+                ? 'bg-primary-500/15 text-primary-700 border border-primary-500/50'
+                : 'glass hover:bg-surface-100'
             }`}
           >
             {metric === 'accuracy' && 'Accuracy'}
@@ -149,7 +149,7 @@ export default function PerformanceChart() {
       </div>
 
       {/* Chart */}
-      <div className="bg-surface-900/50 rounded-xl p-6">
+      <div className="bg-white/60 rounded-xl p-6 border border-surface-200">
         <svg ref={svgRef} className="w-full" style={{ minHeight: '400px' }} />
       </div>
 
@@ -161,7 +161,7 @@ export default function PerformanceChart() {
               className="w-3 h-3 rounded"
               style={{ background: ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'][i] }}
             />
-            <span className="text-sm text-surface-400">{item.method}</span>
+            <span className="text-sm text-surface-600">{item.method}</span>
           </div>
         ))}
       </div>

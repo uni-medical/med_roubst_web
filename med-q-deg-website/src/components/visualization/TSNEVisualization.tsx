@@ -74,8 +74,8 @@ export default function TSNEVisualization() {
       .domain(categories)
       .range(categoryColors);
 
-    // Add grid
-    const gridOpacity = 0.1;
+    // Add grid (light gray for light theme)
+    const gridOpacity = 0.5;
     svg
       .append('g')
       .selectAll('line')
@@ -86,7 +86,7 @@ export default function TSNEVisualization() {
       .attr('x2', (d) => x(d))
       .attr('y1', -height / 2)
       .attr('y2', height / 2)
-      .attr('stroke', '#52525b')
+      .attr('stroke', '#d4d4d8')
       .attr('stroke-opacity', gridOpacity);
 
     svg
@@ -99,7 +99,7 @@ export default function TSNEVisualization() {
       .attr('x2', width / 2)
       .attr('y1', (d) => y(d))
       .attr('y2', (d) => y(d))
-      .attr('stroke', '#52525b')
+      .attr('stroke', '#d4d4d8')
       .attr('stroke-opacity', gridOpacity);
 
     // Add points
@@ -146,7 +146,9 @@ export default function TSNEVisualization() {
           .attr('y', -25)
           .attr('width', 80)
           .attr('height', 20)
-          .attr('fill', '#18181b')
+          .attr('fill', '#ffffff')
+          .attr('stroke', '#e4e4e7')
+          .attr('stroke-width', 1)
           .attr('rx', 6)
           .attr('opacity', 0.95);
 
@@ -203,8 +205,8 @@ export default function TSNEVisualization() {
           onClick={() => setSelectedCategory(null)}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
             selectedCategory === null
-              ? 'bg-primary-500/20 text-primary-300 border border-primary-500/50'
-              : 'glass hover:bg-surface-700/50'
+              ? 'bg-primary-500/15 text-primary-700 border border-primary-500/50'
+              : 'glass hover:bg-surface-100'
           }`}
         >
           All Categories
@@ -216,7 +218,7 @@ export default function TSNEVisualization() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               selectedCategory === cat
                 ? 'border'
-                : 'glass hover:bg-surface-700/50'
+                : 'glass hover:bg-surface-100'
             }`}
             style={
               selectedCategory === cat
@@ -240,14 +242,14 @@ export default function TSNEVisualization() {
       </div>
 
       {/* Chart */}
-      <div className="bg-surface-900/50 rounded-xl p-6">
+      <div className="bg-white/60 rounded-xl p-6 border border-surface-200">
         <svg ref={svgRef} className="w-full" style={{ minHeight: '500px' }} />
       </div>
 
       {/* Info */}
       <div className="mt-6 glass rounded-xl p-4">
-        <p className="text-surface-400 text-sm">
-          <strong className="text-surface-300">t-SNE Visualization:</strong> Each point
+        <p className="text-surface-500 text-sm">
+          <strong className="text-surface-700">t-SNE Visualization:</strong> Each point
           represents a medical image sample. Points are colored by their degradation category.
           Clusters indicate similar feature representations in the learned embedding space.
         </p>
