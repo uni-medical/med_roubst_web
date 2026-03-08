@@ -1,23 +1,430 @@
 {
   "examples": [
     {
-      "id": "example-001",
-      "type": "gaussian_blur",
-      "category": "blur",
-      "severity": "mild",
-      "imagePath": "/images/degradations/placeholder.jpg",
+      "degradation_type": "bias_field_artifact",
+      "display_name": "Bias Field Artifact",
+      "category": "artifact",
       "modality": "MRI",
-      "description": "T2-weighted MRI with mild Gaussian blur"
+      "dataset": "GMAIMMbench",
+      "question": "Observe the MRI image. Can you identify the organ in the highlight area?",
+      "options": [
+        "fat",
+        "stomach",
+        "optic cup",
+        "gallbladder",
+        "optic disc"
+      ],
+      "answer": "B",
+      "answer_text": "stomach",
+      "capability": "Organ Recognition - Abdomen",
+      "images": {
+        "L0": "/examples/bias_field_artifact_L0.png",
+        "L1": "/examples/bias_field_artifact_L1.png",
+        "L2": "/examples/bias_field_artifact_L2.png"
+      }
     },
     {
-      "id": "example-002",
-      "type": "motion_blur",
-      "category": "blur",
-      "severity": "moderate",
-      "imagePath": "/images/degradations/placeholder.jpg",
+      "degradation_type": "blood_cell_artifact",
+      "display_name": "Blood Cell Artifact",
+      "category": "artifact",
+      "modality": "Histopathology",
+      "dataset": "GMAIMMbench",
+      "question": "Which cell type is indicated in the highlighted area of the Histopathology image?",
+      "options": [
+        "epithelial cell",
+        "cytoplasm",
+        "dead cell",
+        "photoreceptor cell"
+      ],
+      "answer": "C",
+      "answer_text": "dead cell",
+      "capability": "Cell Recognition",
+      "images": {
+        "L0": "/examples/blood_cell_artifact_L0.png",
+        "L1": "/examples/blood_cell_artifact_L1.png",
+        "L2": "/examples/blood_cell_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "bubble_artifact",
+      "display_name": "Bubble Artifact",
+      "category": "artifact",
+      "modality": "Histopathology",
+      "dataset": "GMAIMMbench",
+      "question": "Which cell type is indicated in the highlighted area of the Histopathology image?",
+      "options": [
+        "epithelial cell",
+        "cytoplasm",
+        "dead cell",
+        "photoreceptor cell"
+      ],
+      "answer": "C",
+      "answer_text": "dead cell",
+      "capability": "Cell Recognition",
+      "images": {
+        "L0": "/examples/bubble_artifact_L0.png",
+        "L1": "/examples/bubble_artifact_L1.png",
+        "L2": "/examples/bubble_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "dark_spots_artifact",
+      "display_name": "Dark Spots Artifact",
+      "category": "artifact",
+      "modality": "Histopathology",
+      "dataset": "GMAIMMbench",
+      "question": "Which of the following options best matches the marked organ in the Histopathology image?",
+      "options": [
+        "soft tissue cell",
+        "epithelial cell",
+        "neoplastic cell",
+        "inflammatory cell",
+        "dead cell"
+      ],
+      "answer": "B",
+      "answer_text": "epithelial cell",
+      "capability": "Cell Recognition",
+      "images": {
+        "L0": "/examples/dark_spots_artifact_L0.png",
+        "L1": "/examples/dark_spots_artifact_L1.png",
+        "L2": "/examples/dark_spots_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "ghosting_artifact",
+      "display_name": "Ghosting Artifact",
+      "category": "artifact",
+      "modality": "MRI",
+      "dataset": "GMAIMMbench",
+      "question": "Observe the MRI image. Can you identify the organ in the highlight area?",
+      "options": [
+        "fat",
+        "stomach",
+        "optic cup",
+        "gallbladder",
+        "optic disc"
+      ],
+      "answer": "B",
+      "answer_text": "stomach",
+      "capability": "Organ Recognition - Abdomen",
+      "images": {
+        "L0": "/examples/ghosting_artifact_L0.png",
+        "L1": "/examples/ghosting_artifact_L1.png",
+        "L2": "/examples/ghosting_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "limited_angle",
+      "display_name": "Limited Angle",
+      "category": "artifact",
       "modality": "CT",
-      "description": "CT scan with moderate motion blur"
+      "dataset": "GMAIMMbench",
+      "question": "This is a CT image. Which of the following options is the most appropriate to demonstrate the marked area?",
+      "options": [
+        "brain hemorrhage",
+        "barrett's esophagus",
+        "thyroid nodule",
+        "retinal hard exudates"
+      ],
+      "answer": "A",
+      "answer_text": "brain hemorrhage",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/limited_angle_L0.png",
+        "L1": "/examples/limited_angle_L1.png",
+        "L2": "/examples/limited_angle_L2.png"
+      }
+    },
+    {
+      "degradation_type": "sparse_view",
+      "display_name": "Sparse View",
+      "category": "artifact",
+      "modality": "CT",
+      "dataset": "GMAIMMbench",
+      "question": "Considering the symptoms visible in highlighted area of the CT picture, which option corresponds most accurately?",
+      "options": [
+        "barrett's esophagus",
+        "thyroid nodule",
+        "cardiomegaly",
+        "retinal hard exudates",
+        "brain hemorrhage"
+      ],
+      "answer": "E",
+      "answer_text": "brain hemorrhage",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/sparse_view_L0.png",
+        "L1": "/examples/sparse_view_L1.png",
+        "L2": "/examples/sparse_view_L2.png"
+      }
+    },
+    {
+      "degradation_type": "adjust_brightness",
+      "display_name": "Adjust Brightness",
+      "category": "intensity",
+      "modality": "Endoscopy",
+      "dataset": "GMAIMMbench",
+      "question": "Given the boxed region in the endoscopy image, which abnormality is the image most indicative of?",
+      "options": [
+        "polyp",
+        "gastrointestinal tract cancer",
+        "barrett's esophagus",
+        "high-grade dysplasia"
+      ],
+      "answer": "D",
+      "answer_text": "high-grade dysplasia",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/adjust_brightness_L0.png",
+        "L1": "/examples/adjust_brightness_L1.png",
+        "L2": "/examples/adjust_brightness_L2.png"
+      }
+    },
+    {
+      "degradation_type": "exposure_artifact",
+      "display_name": "Exposure Artifact",
+      "category": "intensity",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Focus on the square-highlighted area of this X-ray image. What could be the potential diagnosis?",
+      "options": [
+        "emphysema",
+        "cardiomegaly",
+        "bone fracture",
+        "pulmonary calcification",
+        "diffuse pulmonary nodule"
+      ],
+      "answer": "D",
+      "answer_text": "pulmonary calcification",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/exposure_artifact_L0.png",
+        "L1": "/examples/exposure_artifact_L1.png",
+        "L2": "/examples/exposure_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "reduce_contrast",
+      "display_name": "Reduce Contrast",
+      "category": "intensity",
+      "modality": "Ultrasound",
+      "dataset": "GMAIMMbench",
+      "question": "Given that this is a UltraSound image, which option would be the most fitting for the marked area?",
+      "options": [
+        "thyroid nodule",
+        "cardiomegaly",
+        "brain hemorrhage",
+        "diabetic macular edema",
+        "esophageal cancer"
+      ],
+      "answer": "A",
+      "answer_text": "thyroid nodule",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/reduce_contrast_L0.png",
+        "L1": "/examples/reduce_contrast_L1.png",
+        "L2": "/examples/reduce_contrast_L2.png"
+      }
+    },
+    {
+      "degradation_type": "random_motion_artifact",
+      "display_name": "Random Motion Artifact",
+      "category": "motion",
+      "modality": "MRI",
+      "dataset": "OmniMedVQA",
+      "question": "What is the visual finding in this image?",
+      "options": [
+        "Rotator cuff tear",
+        "Plantar fascia pathology",
+        "Bunion",
+        "Golfer's elbow"
+      ],
+      "answer": "B",
+      "answer_text": "Plantar fascia pathology",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/random_motion_artifact_L0.png",
+        "L1": "/examples/random_motion_artifact_L1.png",
+        "L2": "/examples/random_motion_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "rotation_artifact",
+      "display_name": "Rotation Artifact",
+      "category": "motion",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Given the boxed region in the X-ray image, which abnormality is the image most indicative of?",
+      "options": [
+        "pneumothorax",
+        "pulmonary fibrosis",
+        "bone fracture",
+        "pleural effusion"
+      ],
+      "answer": "A",
+      "answer_text": "pneumothorax",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/rotation_artifact_L0.png",
+        "L1": "/examples/rotation_artifact_L1.png",
+        "L2": "/examples/rotation_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "xray_motion_blur_artifact",
+      "display_name": "X-ray Motion Blur",
+      "category": "motion",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Considering the box-marked region in the X-ray image, what is the most likely diagnosis?",
+      "options": [
+        "cardiomegaly",
+        "pneumothorax",
+        "pulmonary nodule",
+        "pleural thickening"
+      ],
+      "answer": "B",
+      "answer_text": "pneumothorax",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/xray_motion_blur_artifact_L0.png",
+        "L1": "/examples/xray_motion_blur_artifact_L1.png",
+        "L2": "/examples/xray_motion_blur_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "gaussian_noise",
+      "display_name": "Gaussian Noise",
+      "category": "noise",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Focus on the square-highlighted area of this X-ray image. What could be the potential diagnosis?",
+      "options": [
+        "emphysema",
+        "cardiomegaly",
+        "bone fracture",
+        "pulmonary calcification",
+        "diffuse pulmonary nodule"
+      ],
+      "answer": "D",
+      "answer_text": "pulmonary calcification",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/gaussian_noise_L0.png",
+        "L1": "/examples/gaussian_noise_L1.png",
+        "L2": "/examples/gaussian_noise_L2.png"
+      }
+    },
+    {
+      "degradation_type": "undersampling_artifact",
+      "display_name": "Undersampling Artifact",
+      "category": "noise",
+      "modality": "MRI",
+      "dataset": "GMAIMMbench",
+      "question": "This is a MRI image. Which of the following options is the most appropriate to describe the marked area?",
+      "options": [
+        "lung",
+        "necrotic tissue",
+        "stomach",
+        "fascia uncovered kidney parenchyma"
+      ],
+      "answer": "C",
+      "answer_text": "stomach",
+      "capability": "Organ Recognition - Abdomen",
+      "images": {
+        "L0": "/examples/undersampling_artifact_L0.png",
+        "L1": "/examples/undersampling_artifact_L1.png",
+        "L2": "/examples/undersampling_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "downsample_artifact",
+      "display_name": "Low Resolution",
+      "category": "resolution",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "In the area enclosed by a box in this X-ray image, what pathology is most likely present?",
+      "options": [
+        "pneumothorax",
+        "cardiomegaly",
+        "pulmonary consolidation",
+        "bone fracture",
+        "emphysema"
+      ],
+      "answer": "E",
+      "answer_text": "emphysema",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/downsample_artifact_L0.png",
+        "L1": "/examples/downsample_artifact_L1.png",
+        "L2": "/examples/downsample_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "gaussian_blur",
+      "display_name": "Gaussian Blur",
+      "category": "resolution",
+      "modality": "Endoscopy",
+      "dataset": "GMAIMMbench",
+      "question": "Focus on the square-highlighted area of this endoscopy image. What could be the potential diagnosis?",
+      "options": [
+        "barrett's esophagus",
+        "high-grade dysplasia",
+        "polyp",
+        "gastrointestinal tract cancer"
+      ],
+      "answer": "D",
+      "answer_text": "gastrointestinal tract cancer",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/gaussian_blur_L0.png",
+        "L1": "/examples/gaussian_blur_L1.png",
+        "L2": "/examples/gaussian_blur_L2.png"
+      }
+    },
+    {
+      "degradation_type": "low_dose",
+      "display_name": "Low Dose",
+      "category": "resolution",
+      "modality": "MRI",
+      "dataset": "GMAIMMbench",
+      "question": "Observe the MRI image. Can you identify the organ in the highlight area?",
+      "options": [
+        "clavicles",
+        "gallbladder",
+        "small intestine",
+        "large intestine"
+      ],
+      "answer": "D",
+      "answer_text": "large intestine",
+      "capability": "Organ Recognition - Abdomen",
+      "images": {
+        "L0": "/examples/low_dose_L0.png",
+        "L1": "/examples/low_dose_L1.png",
+        "L2": "/examples/low_dose_L2.png"
+      }
+    },
+    {
+      "degradation_type": "motion_blur",
+      "display_name": "Motion Blur",
+      "category": "resolution",
+      "modality": "Endoscopy",
+      "dataset": "GMAIMMbench",
+      "question": "Observe the endoscopy image focusing on the area within the box. What is the most likely abnormality depicted in this section?",
+      "options": [
+        "barrett's esophagus",
+        "polyp",
+        "high-grade dysplasia",
+        "gastrointestinal tract cancer"
+      ],
+      "answer": "C",
+      "answer_text": "high-grade dysplasia",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/motion_blur_L0.png",
+        "L1": "/examples/motion_blur_L1.png",
+        "L2": "/examples/motion_blur_L2.png"
+      }
     }
-  ],
-  "note": "Replace this file with your actual degradation examples data. See DATA_REPLACEMENT_GUIDE.md for format details."
+  ]
 }

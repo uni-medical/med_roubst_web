@@ -1,11 +1,46 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import { SITE_CONFIG, CATEGORIES, DEGRADATION_TYPES } from '@data/config';
+import { SITE_CONFIG } from '@data/config';
 import ImageGallery from '@components/visualization/ImageGallery';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const title = `Examples - ${SITE_CONFIG.title}`;
 const description = 'Explore visual examples of medical image degradation types in our benchmark.';
 const base = import.meta.env.BASE_URL;
+
+// Load examples data at build time
+const dataPath = path.resolve('public/data/degradation-examples.json');
+const rawData = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+const examples = rawData.examples;
+
+// Group by category
+const categoryMeta: Record<string, { name: string; color: string; icon: string; description: string }> = {
+  artifact: { name: 'Artifacts', color: '#ec4899', icon: '⚠', description: 'Bias field, dark spots, ghosting, blood cell, bubble, and other artifacts' },
+  intensity: { name: 'Intensity Jitter', color: '#f59e0b', icon: '◑', description: 'Brightness adjustment, contrast reduction, and exposure artifacts' },
+  resolution: { name: 'Resolution & Blur', color: '#6366f1', icon: '◐', description: 'Gaussian blur, low resolution, and downsampling artifacts' },
+  motion: { name: 'Motion Interference', color: '#10b981', icon: '⇄', description: 'Motion blur, rotation artifacts, and X-ray motion blur' },
+  noise: { name: 'Noise', color: '#8b5cf6', icon: '▥', description: 'Gaussian noise, undersampling artifacts' },
+};
+
+const categories = ['artifact', 'intensity', 'resolution', 'motion', 'noise'];
+const grouped = categories.map(cat => ({
+  id: cat,
+  ...categoryMeta[cat],
+  examples: examples.filter((e: any) => e.category === cat),
+})).filter(g => g.examples.length > 0);
+
+const severityColors: Record<string, string> = {
+  L0: '#22c55e',
+  L1: '#f59e0b',
+  L2: '#ef4444',
+};
+
+const severityLabels: Record<string, string> = {
+  L0: 'L0 (Original)',
+  L1: 'L1 (Moderate)',
+  L2: 'L2 (Severe)',
+};
 ---
 
 <Layout title={title} description={description}>
@@ -17,8 +52,37 @@ const base = import.meta.env.BASE_URL;
           Visual <span class="gradient-text">Examples</span>
         </h1>
         <p class="text-xl text-surface-500">
-          Explore VQA examples under medical image quality degradations. See how different severity levels (L0/L1/L2) affect MLLM responses to clinical questions.
+          Explore VQA examples under medical image quality degradations. See how different severity levels (L0/L1/L2) affect clinical question answering.
         </p>
+        <div class="flex justify-center gap-6 mt-6">
+          {Object.entries(severityLabels).map(([key, label]) => (
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style={`background: ${severityColors[key]};`}></span>
+              <span class="text-sm text-surface-600">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Tabs -->
+  <section class="sticky top-16 z-30 bg-white/80 backdrop-blur-xl border-b border-surface-200">
+    <div class="container-custom py-4">
+      <div class="flex overflow-x-auto scrollbar-hide gap-2" id="category-tabs">
+        <button class="category-tab active" data-category="all">
+          All ({examples.length})
+        </button>
+        {grouped.map((group) => (
+          <button
+            class="category-tab"
+            data-category={group.id}
+            style={`--category-color: ${group.color};`}
+          >
+            <span class="tab-icon">{group.icon}</span>
+            {group.name} ({group.examples.length})
+          </button>
+        ))}
       </div>
     </div>
   </section>
@@ -26,175 +90,110 @@ const base = import.meta.env.BASE_URL;
   <!-- Main Content -->
   <section class="section">
     <div class="container-custom">
-      <!-- Category Tabs -->
-      <div class="mb-12 animate-on-scroll">
-        <div class="flex overflow-x-auto scrollbar-hide gap-2 pb-4" id="category-tabs">
-          <button
-            class="category-tab active"
-            data-category="all"
-          >
-            All Examples
-          </button>
-          {CATEGORIES.map((category) => (
-            <button
-              class="category-tab"
-              data-category={category.id}
-              style={`--category-color: ${category.color};`}
-            >
-              <span class="tab-icon">
-                {category.icon === 'blur_on' && '◐'}
-                {category.icon === 'grain' && '▥'}
-                {category.icon === 'warning' && '⚠'}
-                {category.icon === 'brightness_6' && '◑'}
-                {category.icon === 'motion_photos_on' && '⇄'}
-              </span>
-              {category.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <!-- Examples by Category -->
-      <div class="space-y-16">
-        {CATEGORIES.map((category, catIndex) => {
-          const types = DEGRADATION_TYPES.filter(deg => deg.category === category.id);
-
-          return (
+      {grouped.map((group) => (
+        <div class="category-section mb-16" data-category={group.id}>
+          <!-- Category Header -->
+          <div class="flex items-center gap-4 mb-8 animate-on-scroll">
             <div
-              class="category-section"
-              data-category={category.id}
-              id={`category-${category.id}`}
+              class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+              style={`background: ${group.color}20; color: ${group.color};`}
             >
-              <!-- Category Header -->
-              <div class="flex items-center gap-4 mb-8 animate-on-scroll">
-                <div
-                  class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                  style={`background: ${category.color}20; color: ${category.color};`}
-                >
-                  {category.icon === 'blur_on' && '◐'}
-                  {category.icon === 'grain' && '▥'}
-                  {category.icon === 'warning' && '⚠'}
-                  {category.icon === 'brightness_6' && '◑'}
-                  {category.icon === 'motion_photos_on' && '⇄'}
-                </div>
-                <div>
-                  <h2 class="text-2xl font-bold">{category.name}</h2>
-                  <p class="text-surface-500 text-sm">{category.description}</p>
-                </div>
-              </div>
-
-              <!-- Types Grid -->
-              <div class="space-y-12">
-                {types.map((type, typeIndex) => (
-                  <div
-                    class="degradation-type-section animate-on-scroll"
-                    style={`animation-delay: ${typeIndex * 100}ms;`}
-                  >
-                    <!-- Type Header -->
-                    <div class="flex items-center justify-between mb-6">
-                      <div>
-                        <div class="flex items-center gap-3 mb-2">
-                          <h3 class="text-xl font-semibold">{type.name}</h3>
-                          <span
-                            class="badge"
-                            style={`background: ${category.color}20; color: ${category.color};`}
-                          >
-                            {category.name}
-                          </span>
-                        </div>
-                        <p class="text-surface-500 text-sm">
-                          Severity levels: L0 (Original), L1 (Moderate), L2 (Severe)
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Example Images Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {[...Array(4)].map((_, i) => (
-                        <div class="example-card group cursor-pointer">
-                          <div class="aspect-square rounded-xl bg-gradient-to-br from-surface-100 to-surface-200 overflow-hidden relative border border-surface-200">
-                            {/* Image placeholder */}
-                            <div class="absolute inset-0 flex flex-col items-center justify-center text-surface-400 p-3">
-                              <svg class="w-10 h-10 mb-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                              <span class="text-xs text-surface-500 text-center font-medium leading-tight">{type.name}</span>
-                            </div>
-
-                            {/* Overlay */}
-                            <div class="absolute inset-0 bg-surface-900/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <div class="text-center text-white">
-                                <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                </svg>
-                                <p class="text-sm">Click to enlarge</p>
-                              </div>
-                            </div>
-
-                            {/* Severity Badge */}
-                            <div class="absolute top-2 right-2">
-                              <span class="px-2 py-1 rounded text-xs bg-white/90 text-surface-700 border border-surface-200 font-medium">
-                                {['L0', 'L1', 'L2', 'L0'][i]}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Caption */}
-                          <p class="text-xs text-surface-500 mt-2 text-center">
-                            Severity {['L0', 'L1', 'L2', 'L0'][i]} Example
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {group.icon}
             </div>
-          );
-        })}
-      </div>
+            <div>
+              <h2 class="text-2xl font-bold">{group.name}</h2>
+              <p class="text-surface-500 text-sm">{group.description}</p>
+            </div>
+          </div>
 
-      <!-- All Examples Section (Hidden by default) -->
-      <div
-        class="category-section hidden"
-        data-category="all"
-        id="category-all"
-      >
-        <div class="text-center mb-12 animate-on-scroll">
-          <h2 class="text-3xl font-bold mb-4">All Examples</h2>
-          <p class="text-surface-500">Browse all degradation types across categories</p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {DEGRADATION_TYPES.map((type, index) => {
-            const category = CATEGORIES.find(c => c.id === type.category);
-            return (
-              <div
-                class="example-card-compact animate-on-scroll"
-                style={`animation-delay: ${(index % 20) * 30}ms;`}
-              >
-                <div class="aspect-square rounded-xl bg-gradient-to-br from-surface-100 to-surface-200 overflow-hidden relative group cursor-pointer border border-surface-200">
-                  <div class="absolute inset-0 flex flex-col items-center justify-center text-surface-400 p-3">
-                    <svg class="w-9 h-9 mb-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+          <!-- Examples -->
+          <div class="space-y-12">
+            {group.examples.map((example: any, idx: number) => (
+              <div class="example-block animate-on-scroll bg-white rounded-2xl border border-surface-200 shadow-sm overflow-hidden" style={`animation-delay: ${idx * 100}ms;`}>
+                <!-- Example Header -->
+                <div class="px-6 py-4 border-b border-surface-100 bg-surface-50/50">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <h3 class="text-lg font-semibold">{example.display_name}</h3>
+                    <span class="badge" style={`background: ${group.color}15; color: ${group.color}; border: 1px solid ${group.color}30;`}>
+                      {example.modality}
+                    </span>
+                    <span class="badge bg-surface-100 text-surface-600 border border-surface-200">
+                      {example.dataset}
+                    </span>
+                    <span class="badge bg-blue-50 text-blue-600 border border-blue-200">
+                      {example.capability}
+                    </span>
                   </div>
                 </div>
 
-                <div class="mt-3">
-                  <span
-                    class="badge mb-2"
-                    style={`background: ${category?.color}20; color: ${category?.color};`}
-                  >
-                    {category?.name}
-                  </span>
-                  <h4 class="font-medium text-sm text-surface-800">{type.name}</h4>
+                <!-- Image Comparison -->
+                <div class="p-6">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    {(['L0', 'L1', 'L2'] as const).map((level) => (
+                      <div class="example-image-card group cursor-pointer" data-src={`${base}${example.images[level]}`} data-deg={example.degradation_type} data-level={level}>
+                        <div class="relative rounded-xl overflow-hidden border border-surface-200 bg-surface-50">
+                          <img
+                            src={`${base}${example.images[level]}`}
+                            alt={`${example.display_name} - ${severityLabels[level]}`}
+                            class="w-full aspect-square object-contain"
+                            loading="lazy"
+                          />
+                          {/* Severity Badge */}
+                          <div class="absolute top-2 left-2">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold text-white shadow-sm" style={`background: ${severityColors[level]};`}>
+                              {level}
+                            </span>
+                          </div>
+                          {/* Hover Overlay */}
+                          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
+                        </div>
+                        <p class="text-xs text-surface-500 mt-2 text-center font-medium">{severityLabels[level]}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <!-- VQA Info -->
+                  <div class="bg-surface-50 rounded-xl p-4 border border-surface-100">
+                    <div class="mb-3">
+                      <span class="text-xs font-semibold text-surface-400 uppercase tracking-wider">Question</span>
+                      <p class="text-sm text-surface-800 mt-1">{example.question}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      {example.options.map((opt: string, i: number) => {
+                        const letter = String.fromCharCode(65 + i);
+                        const isAnswer = letter === example.answer;
+                        return (
+                          <span class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${isAnswer ? 'bg-green-100 text-green-700 border border-green-300 ring-1 ring-green-200' : 'bg-white text-surface-600 border border-surface-200'}`}>
+                            <span class={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${isAnswer ? 'bg-green-500 text-white' : 'bg-surface-200 text-surface-500'}`}>
+                              {letter}
+                            </span>
+                            {opt}
+                            {isAnswer && (
+                              <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                              </svg>
+                            )}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-surface-400">
+                      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span>Ground Truth: <strong class="text-green-600">{example.answer}. {example.answer_text}</strong></span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   </section>
 
@@ -209,11 +208,11 @@ const base = import.meta.env.BASE_URL;
           Want to Try on Your Own Data?
         </h2>
         <p class="text-surface-500 max-w-xl mx-auto mb-8">
-          Download our pre-trained models and test them on your medical images.
+          Download the full benchmark dataset with 24,894 QA pairs across 18 degradation types.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <a href={SITE_CONFIG.links.github} class="btn btn-primary">
-            Get Models
+            Get Dataset
           </a>
           <a href={`${base}/benchmark`} class="btn btn-secondary">
             View Benchmark
@@ -226,7 +225,7 @@ const base = import.meta.env.BASE_URL;
 
 <style>
   .category-tab {
-    @apply px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200;
+    @apply px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200;
     @apply bg-white/80 backdrop-blur-md border border-surface-200;
     @apply hover:bg-surface-100;
     @apply inline-flex items-center gap-2 whitespace-nowrap flex-shrink-0;
@@ -254,73 +253,66 @@ const base = import.meta.env.BASE_URL;
     display: none;
   }
 
-  .example-card {
-    @apply transition-all duration-300;
+  .example-image-card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
   }
 
-  .example-card:hover {
-    transform: translateY(-4px);
+  .badge {
+    @apply px-2.5 py-1 rounded-lg text-xs font-medium;
   }
 
-  .example-card-compact {
-    @apply rounded-2xl p-4 transition-all duration-300;
-    @apply bg-white/70 backdrop-blur-md border border-surface-200;
-    @apply hover:bg-white/90 hover:border-primary-400/40 hover:shadow-lg hover:shadow-primary-500/10 cursor-pointer;
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 </style>
 
 <script>
-  // Tab switching functionality
+  // Tab switching
   const categoryTabs = document.querySelectorAll('.category-tab');
   const categorySections = document.querySelectorAll('.category-section');
-
-  function showCategory(categoryId: string) {
-    categorySections.forEach((section) => {
-      const sectionCategory = section.getAttribute('data-category');
-
-      if (categoryId === 'all') {
-        // Show "All Examples" section, hide category-specific sections
-        if (sectionCategory === 'all') {
-          section.classList.remove('hidden-section');
-          section.classList.remove('hidden');
-        } else {
-          section.classList.add('hidden-section');
-        }
-      } else {
-        // Show specific category section, hide "All Examples"
-        if (sectionCategory === categoryId) {
-          section.classList.remove('hidden-section');
-        } else {
-          section.classList.add('hidden-section');
-        }
-      }
-    });
-  }
 
   categoryTabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       const categoryId = tab.getAttribute('data-category') || 'all';
 
-      // Update active state
       categoryTabs.forEach((t) => t.classList.remove('active'));
       tab.classList.add('active');
 
-      // Show corresponding section
-      showCategory(categoryId);
-
-      // Smooth scroll to content
-      const targetSection = document.getElementById(`category-${categoryId}`);
-      if (targetSection) {
-        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      categorySections.forEach((section) => {
+        const sectionCategory = section.getAttribute('data-category');
+        if (categoryId === 'all') {
+          section.classList.remove('hidden-section');
+        } else {
+          if (sectionCategory === categoryId) {
+            section.classList.remove('hidden-section');
+          } else {
+            section.classList.add('hidden-section');
+          }
+        }
+      });
     });
   });
 
-  // Handle URL parameters (e.g., ?type=gaussian_blur)
-  const urlParams = new URLSearchParams(window.location.search);
-  const typeParam = urlParams.get('type');
+  // Image click -> gallery
+  document.querySelectorAll('.example-image-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const src = card.getAttribute('data-src');
+      const degType = card.getAttribute('data-deg');
 
-  if (typeParam) {
-    console.log('Type parameter:', typeParam);
-  }
+      // Collect all 3 images for this degradation type
+      const allCards = document.querySelectorAll(`.example-image-card[data-deg="${degType}"]`);
+      const allImages = Array.from(allCards).map(c => c.getAttribute('data-src')).filter(Boolean) as string[];
+      const index = allImages.indexOf(src || '');
+
+      const event = new CustomEvent('open-gallery', {
+        detail: { imageSrc: src, allImages, index: Math.max(0, index) }
+      });
+      window.dispatchEvent(event);
+    });
+  });
 </script>
