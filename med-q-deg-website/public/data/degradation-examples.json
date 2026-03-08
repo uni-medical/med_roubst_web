@@ -46,28 +46,6 @@
       }
     },
     {
-      "degradation_type": "bubble_artifact",
-      "display_name": "Bubble Artifact",
-      "category": "artifact",
-      "modality": "Histopathology",
-      "dataset": "GMAIMMbench",
-      "question": "Which cell type is indicated in the highlighted area of the Histopathology image?",
-      "options": [
-        "epithelial cell",
-        "cytoplasm",
-        "dead cell",
-        "photoreceptor cell"
-      ],
-      "answer": "C",
-      "answer_text": "dead cell",
-      "capability": "Cell Recognition",
-      "images": {
-        "L0": "/examples/bubble_artifact_L0.png",
-        "L1": "/examples/bubble_artifact_L1.png",
-        "L2": "/examples/bubble_artifact_L2.png"
-      }
-    },
-    {
       "degradation_type": "dark_spots_artifact",
       "display_name": "Dark Spots Artifact",
       "category": "artifact",
@@ -159,6 +137,72 @@
       }
     },
     {
+      "degradation_type": "undersampling_artifact",
+      "display_name": "Undersampling Artifact",
+      "category": "artifact",
+      "modality": "MRI",
+      "dataset": "GMAIMMbench",
+      "question": "This is a MRI image. Which of the following options is the most appropriate to describe the marked area?",
+      "options": [
+        "lung",
+        "necrotic tissue",
+        "stomach",
+        "fascia uncovered kidney parenchyma"
+      ],
+      "answer": "C",
+      "answer_text": "stomach",
+      "capability": "Organ Recognition - Abdomen",
+      "images": {
+        "L0": "/examples/undersampling_artifact_L0.png",
+        "L1": "/examples/undersampling_artifact_L1.png",
+        "L2": "/examples/undersampling_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "random_motion_artifact",
+      "display_name": "Object Movement",
+      "category": "motion",
+      "modality": "MRI",
+      "dataset": "OmniMedVQA",
+      "question": "What is the visual finding in this image?",
+      "options": [
+        "Rotator cuff tear",
+        "Plantar fascia pathology",
+        "Bunion",
+        "Golfer's elbow"
+      ],
+      "answer": "B",
+      "answer_text": "Plantar fascia pathology",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/random_motion_artifact_L0.png",
+        "L1": "/examples/random_motion_artifact_L1.png",
+        "L2": "/examples/random_motion_artifact_L2.png"
+      }
+    },
+    {
+      "degradation_type": "rotation_artifact",
+      "display_name": "Object Rotation",
+      "category": "motion",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Given the boxed region in the X-ray image, which abnormality is the image most indicative of?",
+      "options": [
+        "pneumothorax",
+        "pulmonary fibrosis",
+        "bone fracture",
+        "pleural effusion"
+      ],
+      "answer": "A",
+      "answer_text": "pneumothorax",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/rotation_artifact_L0.png",
+        "L1": "/examples/rotation_artifact_L1.png",
+        "L2": "/examples/rotation_artifact_L2.png"
+      }
+    },
+    {
       "degradation_type": "adjust_brightness",
       "display_name": "Adjust Brightness",
       "category": "intensity",
@@ -182,7 +226,7 @@
     },
     {
       "degradation_type": "exposure_artifact",
-      "display_name": "Exposure Artifact",
+      "display_name": "Exposure",
       "category": "intensity",
       "modality": "X-ray",
       "dataset": "GMAIMMbench",
@@ -227,72 +271,6 @@
       }
     },
     {
-      "degradation_type": "random_motion_artifact",
-      "display_name": "Random Motion Artifact",
-      "category": "motion",
-      "modality": "MRI",
-      "dataset": "OmniMedVQA",
-      "question": "What is the visual finding in this image?",
-      "options": [
-        "Rotator cuff tear",
-        "Plantar fascia pathology",
-        "Bunion",
-        "Golfer's elbow"
-      ],
-      "answer": "B",
-      "answer_text": "Plantar fascia pathology",
-      "capability": "Disease Diagnosis",
-      "images": {
-        "L0": "/examples/random_motion_artifact_L0.png",
-        "L1": "/examples/random_motion_artifact_L1.png",
-        "L2": "/examples/random_motion_artifact_L2.png"
-      }
-    },
-    {
-      "degradation_type": "rotation_artifact",
-      "display_name": "Rotation Artifact",
-      "category": "motion",
-      "modality": "X-ray",
-      "dataset": "GMAIMMbench",
-      "question": "Given the boxed region in the X-ray image, which abnormality is the image most indicative of?",
-      "options": [
-        "pneumothorax",
-        "pulmonary fibrosis",
-        "bone fracture",
-        "pleural effusion"
-      ],
-      "answer": "A",
-      "answer_text": "pneumothorax",
-      "capability": "Disease Diagnosis",
-      "images": {
-        "L0": "/examples/rotation_artifact_L0.png",
-        "L1": "/examples/rotation_artifact_L1.png",
-        "L2": "/examples/rotation_artifact_L2.png"
-      }
-    },
-    {
-      "degradation_type": "xray_motion_blur_artifact",
-      "display_name": "X-ray Motion Blur",
-      "category": "motion",
-      "modality": "X-ray",
-      "dataset": "GMAIMMbench",
-      "question": "Considering the box-marked region in the X-ray image, what is the most likely diagnosis?",
-      "options": [
-        "cardiomegaly",
-        "pneumothorax",
-        "pulmonary nodule",
-        "pleural thickening"
-      ],
-      "answer": "B",
-      "answer_text": "pneumothorax",
-      "capability": "Disease Diagnosis",
-      "images": {
-        "L0": "/examples/xray_motion_blur_artifact_L0.png",
-        "L1": "/examples/xray_motion_blur_artifact_L1.png",
-        "L2": "/examples/xray_motion_blur_artifact_L2.png"
-      }
-    },
-    {
       "degradation_type": "gaussian_noise",
       "display_name": "Gaussian Noise",
       "category": "noise",
@@ -316,25 +294,47 @@
       }
     },
     {
-      "degradation_type": "undersampling_artifact",
-      "display_name": "Undersampling Artifact",
+      "degradation_type": "low_dose",
+      "display_name": "Low Dose",
       "category": "noise",
       "modality": "MRI",
       "dataset": "GMAIMMbench",
-      "question": "This is a MRI image. Which of the following options is the most appropriate to describe the marked area?",
+      "question": "Observe the MRI image. Can you identify the organ in the highlight area?",
       "options": [
-        "lung",
-        "necrotic tissue",
-        "stomach",
-        "fascia uncovered kidney parenchyma"
+        "clavicles",
+        "gallbladder",
+        "small intestine",
+        "large intestine"
       ],
-      "answer": "C",
-      "answer_text": "stomach",
+      "answer": "D",
+      "answer_text": "large intestine",
       "capability": "Organ Recognition - Abdomen",
       "images": {
-        "L0": "/examples/undersampling_artifact_L0.png",
-        "L1": "/examples/undersampling_artifact_L1.png",
-        "L2": "/examples/undersampling_artifact_L2.png"
+        "L0": "/examples/low_dose_L0.png",
+        "L1": "/examples/low_dose_L1.png",
+        "L2": "/examples/low_dose_L2.png"
+      }
+    },
+    {
+      "degradation_type": "bubble_artifact",
+      "display_name": "Bubble",
+      "category": "resolution",
+      "modality": "Histopathology",
+      "dataset": "GMAIMMbench",
+      "question": "Which cell type is indicated in the highlighted area of the Histopathology image?",
+      "options": [
+        "epithelial cell",
+        "cytoplasm",
+        "dead cell",
+        "photoreceptor cell"
+      ],
+      "answer": "C",
+      "answer_text": "dead cell",
+      "capability": "Cell Recognition",
+      "images": {
+        "L0": "/examples/bubble_artifact_L0.png",
+        "L1": "/examples/bubble_artifact_L1.png",
+        "L2": "/examples/bubble_artifact_L2.png"
       }
     },
     {
@@ -383,28 +383,6 @@
       }
     },
     {
-      "degradation_type": "low_dose",
-      "display_name": "Low Dose",
-      "category": "resolution",
-      "modality": "MRI",
-      "dataset": "GMAIMMbench",
-      "question": "Observe the MRI image. Can you identify the organ in the highlight area?",
-      "options": [
-        "clavicles",
-        "gallbladder",
-        "small intestine",
-        "large intestine"
-      ],
-      "answer": "D",
-      "answer_text": "large intestine",
-      "capability": "Organ Recognition - Abdomen",
-      "images": {
-        "L0": "/examples/low_dose_L0.png",
-        "L1": "/examples/low_dose_L1.png",
-        "L2": "/examples/low_dose_L2.png"
-      }
-    },
-    {
       "degradation_type": "motion_blur",
       "display_name": "Motion Blur",
       "category": "resolution",
@@ -424,6 +402,28 @@
         "L0": "/examples/motion_blur_L0.png",
         "L1": "/examples/motion_blur_L1.png",
         "L2": "/examples/motion_blur_L2.png"
+      }
+    },
+    {
+      "degradation_type": "xray_motion_blur_artifact",
+      "display_name": "X-ray Motion Blur",
+      "category": "resolution",
+      "modality": "X-ray",
+      "dataset": "GMAIMMbench",
+      "question": "Considering the box-marked region in the X-ray image, what is the most likely diagnosis?",
+      "options": [
+        "cardiomegaly",
+        "pneumothorax",
+        "pulmonary nodule",
+        "pleural thickening"
+      ],
+      "answer": "B",
+      "answer_text": "pneumothorax",
+      "capability": "Disease Diagnosis",
+      "images": {
+        "L0": "/examples/xray_motion_blur_artifact_L0.png",
+        "L1": "/examples/xray_motion_blur_artifact_L1.png",
+        "L2": "/examples/xray_motion_blur_artifact_L2.png"
       }
     }
   ]

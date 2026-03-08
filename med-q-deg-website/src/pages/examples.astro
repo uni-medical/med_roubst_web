@@ -16,14 +16,14 @@ const examples = rawData.examples;
 
 // Group by category
 const categoryMeta: Record<string, { name: string; color: string; icon: string; description: string }> = {
-  artifact: { name: 'Artifacts', color: '#ec4899', icon: '⚠', description: 'Bias field, dark spots, ghosting, blood cell, bubble, and other artifacts' },
-  intensity: { name: 'Intensity Jitter', color: '#f59e0b', icon: '◑', description: 'Brightness adjustment, contrast reduction, and exposure artifacts' },
-  resolution: { name: 'Resolution & Blur', color: '#6366f1', icon: '◐', description: 'Gaussian blur, low resolution, and downsampling artifacts' },
-  motion: { name: 'Motion Interference', color: '#10b981', icon: '⇄', description: 'Motion blur, rotation artifacts, and X-ray motion blur' },
-  noise: { name: 'Noise', color: '#8b5cf6', icon: '▥', description: 'Gaussian noise, undersampling artifacts' },
+  artifact: { name: 'Artifacts', color: '#ec4899', icon: '⚠', description: 'Limited angle, sparse view, bias field, undersampling, ghosting, blood cell, and dark spots artifacts' },
+  motion: { name: 'Motion Interference', color: '#10b981', icon: '⇄', description: 'Object rotation and object movement' },
+  intensity: { name: 'Intensity Jitter', color: '#f59e0b', icon: '◑', description: 'Brightness adjustment, exposure, and contrast reduction' },
+  noise: { name: 'Noise', color: '#8b5cf6', icon: '▥', description: 'Gaussian noise and low dose artifacts' },
+  resolution: { name: 'Resolution & Blur', color: '#6366f1', icon: '◐', description: 'Low resolution, motion blur, Gaussian blur, bubble, and X-ray motion blur' },
 };
 
-const categories = ['artifact', 'intensity', 'resolution', 'motion', 'noise'];
+const categories = ['artifact', 'motion', 'intensity', 'noise', 'resolution'];
 const grouped = categories.map(cat => ({
   id: cat,
   ...categoryMeta[cat],

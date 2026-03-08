@@ -57,23 +57,7 @@ export const CATEGORIES = [
     nameZh: '伪迹',
     color: '#ec4899',
     icon: 'warning',
-    description: 'Bias field, dark spots, ghosting, and metal artifacts',
-  },
-  {
-    id: 'intensity',
-    name: 'Intensity Jitter',
-    nameZh: '强度抖动',
-    color: '#f59e0b',
-    icon: 'brightness_6',
-    description: 'Brightness adjustment and contrast reduction',
-  },
-  {
-    id: 'resolution',
-    name: 'Resolution & Blur',
-    nameZh: '分辨率和模糊',
-    color: '#6366f1',
-    icon: 'blur_on',
-    description: 'Gaussian blur and resolution degradation',
+    description: 'Limited angle, sparse view, bias field, undersampling, ghosting, blood cell, and dark spots artifacts',
   },
   {
     id: 'motion',
@@ -81,7 +65,15 @@ export const CATEGORIES = [
     nameZh: '运动干扰',
     color: '#10b981',
     icon: 'motion_photos_on',
-    description: 'Motion blur and related artifacts',
+    description: 'Object rotation and object movement',
+  },
+  {
+    id: 'intensity',
+    name: 'Intensity Jitter',
+    nameZh: '强度抖动',
+    color: '#f59e0b',
+    icon: 'brightness_6',
+    description: 'Brightness adjustment, exposure, and contrast reduction',
   },
   {
     id: 'noise',
@@ -89,43 +81,52 @@ export const CATEGORIES = [
     nameZh: '噪声',
     color: '#8b5cf6',
     icon: 'grain',
-    description: 'Gaussian noise and related noise types',
+    description: 'Gaussian noise and low dose artifacts',
+  },
+  {
+    id: 'resolution',
+    name: 'Resolution & Blur',
+    nameZh: '分辨率和模糊',
+    color: '#6366f1',
+    icon: 'blur_on',
+    description: 'Low resolution, motion blur, Gaussian blur, bubble, and X-ray motion blur',
   },
 ] as const;
 
 /**
  * Degradation Types
- * 18 degradation types across 5 categories based on the paper
+ * 19 degradation types across 5 categories based on the paper
  * Severity levels: L0 (original), L1 (moderate), L2 (severe)
  */
 export const DEGRADATION_TYPES = [
-  // Artifacts (5 types)
-  { id: 'bias_field_artifact', name: 'Bias Field Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'dark_spots_artifact', name: 'Dark Spots Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'ghosting_artifact', name: 'Ghosting Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'sparse_view', name: 'Sparse View', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  // Artifacts (7 types)
   { id: 'limited_angle', name: 'Limited Angle', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'sparse_view', name: 'Sparse View', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'bias_field_artifact', name: 'Bias Field Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'undersampling_artifact', name: 'Undersampling Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'ghosting_artifact', name: 'Ghosting Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'blood_cell_artifact', name: 'Blood Cell Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'dark_spots_artifact', name: 'Dark Spots Artifact', category: 'artifact' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Intensity Jitter (2 types)
+  // Motion Interference (2 types)
+  { id: 'rotation_artifact', name: 'Object Rotation', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'random_motion_artifact', name: 'Object Movement', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
+
+  // Intensity Jitter (3 types)
   { id: 'adjust_brightness', name: 'Adjust Brightness', category: 'intensity' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'exposure_artifact', name: 'Exposure', category: 'intensity' as const, severity: ['L0', 'L1', 'L2'] },
   { id: 'reduce_contrast', name: 'Reduce Contrast', category: 'intensity' as const, severity: ['L0', 'L1', 'L2'] },
 
-  // Resolution & Blur (4 types)
-  { id: 'gaussian_blur', name: 'Gaussian Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'motion_blur', name: 'Motion Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'defocus_blur', name: 'Defocus Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'low_resolution', name: 'Low Resolution', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
-
-  // Motion Interference (3 types)
-  { id: 'motion_ghosting', name: 'Motion Ghosting', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'temporal_aliasing', name: 'Temporal Aliasing', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'cardiac_motion', name: 'Cardiac Motion', category: 'motion' as const, severity: ['L0', 'L1', 'L2'] },
-
-  // Noise (4 types)
+  // Noise (2 types)
   { id: 'gaussian_noise', name: 'Gaussian Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'speckle_noise', name: 'Speckle Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'salt_pepper_noise', name: 'Salt & Pepper Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
-  { id: 'poisson_noise', name: 'Poisson Noise', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'low_dose', name: 'Low Dose', category: 'noise' as const, severity: ['L0', 'L1', 'L2'] },
+
+  // Resolution & Blur (5 types)
+  { id: 'downsample_artifact', name: 'Low Resolution', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'motion_blur', name: 'Motion Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'gaussian_blur', name: 'Gaussian Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'bubble_artifact', name: 'Bubble', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
+  { id: 'xray_motion_blur_artifact', name: 'X-ray Motion Blur', category: 'resolution' as const, severity: ['L0', 'L1', 'L2'] },
 ] as const;
 
 /**
