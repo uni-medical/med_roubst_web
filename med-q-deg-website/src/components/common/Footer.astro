@@ -1,6 +1,16 @@
 ---
 const year = new Date().getFullYear();
 const base = import.meta.env.BASE_URL;
+
+const citationBibtex = `@misc{liu2026medqdegmultidimensionalbenchmarkevaluating,
+      title={MedQ-Deg: A Multidimensional Benchmark for Evaluating MLLMs Across Medical Image Quality Degradations},
+      author={Jiyao Liu and Junzhi Ning and Chenglong Ma and Wanying Qu and Jianghan Shen and Siqi Luo and Jinjie Wei and Jin Ye and Pengze Li and Tianbin Li and Jiashi Lin and Hongming Shan and Xinzhe Luo and Xiaohong Liu and Lihao Liu and Junjun He and Ningsheng Xu},
+      year={2026},
+      eprint={2603.07769},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2603.07769},
+}`;
 ---
 
 <footer class="glass-strong border-t border-surface-200/50 mt-auto">
@@ -44,15 +54,7 @@ const base = import.meta.env.BASE_URL;
     <!-- Citation -->
     <div class="mt-12 pt-8 border-t border-surface-200/50">
       <h3 class="font-semibold mb-3 text-surface-800">Citation</h3>
-      <pre class="bg-surface-100 rounded-xl p-4 text-xs text-surface-600 overflow-x-auto font-mono leading-relaxed"><code>@misc{liu2026medqdegmultidimensionalbenchmarkevaluating,
-      title={MedQ-Deg: A Multidimensional Benchmark for Evaluating MLLMs Across Medical Image Quality Degradations},
-      author={Jiyao Liu and Junzhi Ning and Chenglong Ma and Wanying Qu and Jianghan Shen and Siqi Luo and Jinjie Wei and Jin Ye and Pengze Li and Tianbin Li and Jiashi Lin and Hongming Shan and Xinzhe Luo and Xiaohong Liu and Lihao Liu and Junjun He and Ningsheng Xu},
-      year={2026},
-      eprint={2603.07769},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2603.07769},
-}</code></pre>
+      <pre class="bg-surface-100 rounded-xl p-4 text-xs text-surface-600 overflow-x-auto font-mono leading-relaxed"><code set:text={citationBibtex} /></pre>
     </div>
 
     <!-- Bottom -->
